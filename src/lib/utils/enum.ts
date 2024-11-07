@@ -13,5 +13,10 @@ export enum InquiryStatus {
 }
 
 export enum ApiTag {
-  USER = 'User',
+  ADMIN = 'Admin',
+  INQUIRY = 'inquiry',
+}
+
+export enum ConstantValues {
+  ADMIN = 'Admin',
 }
