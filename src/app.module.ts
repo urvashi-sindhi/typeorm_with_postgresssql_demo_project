@@ -8,12 +8,13 @@ import { User } from './lib/entities/user.entity';
 import * as dotenv from 'dotenv';
 import { Inquiry } from './lib/entities/inquiry.entity';
 import { JwtService } from '@nestjs/jwt';
+import { Otp } from './lib/entities/otp.entity';
 dotenv.config();
 
 const config: any = {
   type: 'postgres',
   autoLoadEntities: true,
-  entities: [User, Inquiry],
+  entities: [User, Inquiry, Otp],
   define: {
     timestamps: false,
   },
