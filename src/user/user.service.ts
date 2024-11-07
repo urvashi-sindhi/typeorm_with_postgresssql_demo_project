@@ -16,21 +16,21 @@ export class UserService {
   async listOfInquiries() {
     const inquiryList = await this.inquiryRepository.find();
 
-    if (inquiryList && inquiryList.length > 0) {
-      Logger.log(`Inquiry ${Messages.GET_SUCCESS}`);
-      return handleResponse(
-        HttpStatus.OK,
-        ResponseStatus.SUCCESS,
-        undefined,
-        inquiryList,
-      );
-    } else {
-      Logger.error(`Inquiry ${Messages.NOT_FOUND}`);
+    if (inquiryList.length <= 0) {
+      Logger.error(`Inquiry details ${Messages.NOT_FOUND}`);
       return handleResponse(
         HttpStatus.NOT_FOUND,
         ResponseStatus.ERROR,
-        `Inquiry ${Messages.NOT_FOUND}`,
+        `Inquiry details ${Messages.NOT_FOUND}`,
       );
     }
+
+    Logger.log(`Inquiry ${Messages.GET_SUCCESS}`);
+    return handleResponse(
+      HttpStatus.OK,
+      ResponseStatus.SUCCESS,
+      undefined,
+      inquiryList,
+    );
   }
 }
