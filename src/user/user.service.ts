@@ -1,7 +1,6 @@
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Inquiry } from 'src/lib/entities/inquiry.entity';
-import { User } from 'src/lib/entities/user.entity';
 import { handleResponse } from 'src/lib/helpers/handleResponse';
 import { ResponseStatus } from 'src/lib/utils/enum';
 import { Messages } from 'src/lib/utils/messages';
@@ -10,7 +9,6 @@ import { Repository } from 'typeorm';
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(Inquiry)
     private readonly inquiryRepository: Repository<Inquiry>,
   ) {}
