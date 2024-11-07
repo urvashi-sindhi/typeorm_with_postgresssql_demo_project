@@ -4,13 +4,14 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Param,
   Post,
   Put,
   Req,
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { ApiTag } from 'src/lib/utils/enum';
 import { CreateInquiryDto } from './dto/createInquiry.dto';
 import { LoginDto } from './dto/login.dto';
@@ -18,6 +19,7 @@ import { JwtGuard } from 'src/lib/services/auth/guard/jwt.guard';
 import { ResetPasswordDto } from './dto/resetPassword.dto';
 import { VerifyEmailDto } from './dto/verifyEmail.dto';
 import { ForgotPasswordDto } from './dto/forgotPassword.dto';
+import { ListOfFilterDto } from './dto/listOfInquiries.dto';
 
 @Controller()
 export class UserController {
@@ -61,9 +63,25 @@ export class UserController {
   }
 
   @ApiTags(ApiTag.ADMIN)
+  @ApiParam({ example: 1, name: 'inquiryId', required: true })
   @HttpCode(HttpStatus.OK)
-  @Get('admin/listOfInquiries')
-  listOfInquiries() {
-    return this.userService.listOfInquiries();
+  @Get('admin/viewInquiry/:inquiryId')
+  viewInquiry(@Param('inquiryId') inquiryId: number) {
+    return this.userService.viewInquiry(inquiryId);
+  }
+
+  @ApiTags(ApiTag.ADMIN)
+  @ApiParam({ example: 1, name: 'inquiryId', required: true })
+  @HttpCode(HttpStatus.OK)
+  @Put('admin/updateInquiryStatus/:inquiryId')
+  updateInquiryStatus(@Param('inquiryId') inquiryId: number) {
+    return this.userService.updateInquiryStatus(inquiryId);
+  }
+
+  @ApiTags(ApiTag.ADMIN)
+  @HttpCode(HttpStatus.OK)
+  @Post('admin/listOfInquiries')
+  listOfInquiries(@Body() dto: ListOfFilterDto) {
+    return this.userService.listOfInquiries(dto);
   }
 }
