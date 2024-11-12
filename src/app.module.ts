@@ -8,6 +8,7 @@ import * as dotenv from 'dotenv';
 import { Inquiry } from './lib/entities/inquiry.entity';
 import { JwtService } from '@nestjs/jwt';
 import { InquiryModule } from './inquiry/inquiry.module';
+import { UserModule } from './user/user.module';
 dotenv.config();
 
 const config: any = {
@@ -33,6 +34,7 @@ const config: any = {
       logging: false,
     }),
     InquiryModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtService],
