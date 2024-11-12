@@ -64,6 +64,8 @@ export class UserController {
 
   @ApiTags(ApiTag.ADMIN)
   @ApiParam({ example: 1, name: 'inquiryId', required: true })
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
   @Get('admin/viewInquiry/:inquiryId')
   viewInquiry(@Param('inquiryId') inquiryId: number) {
@@ -72,6 +74,8 @@ export class UserController {
 
   @ApiTags(ApiTag.ADMIN)
   @ApiParam({ example: 1, name: 'inquiryId', required: true })
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
   @Put('admin/updateInquiryStatus/:inquiryId')
   updateInquiryStatus(@Param('inquiryId') inquiryId: number) {
@@ -79,6 +83,8 @@ export class UserController {
   }
 
   @ApiTags(ApiTag.ADMIN)
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
   @Post('admin/listOfInquiries')
   listOfInquiries(@Body() dto: ListOfFilterDto) {
