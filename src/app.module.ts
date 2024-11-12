@@ -29,7 +29,7 @@ const config: any = {
       username: process.env.DATABASE_USERS,
       database: process.env.DATABASE_NAME,
       synchronize: true,
-      logging: true,
+      logging: false,
     }),
     InquiryModule,
   ],
