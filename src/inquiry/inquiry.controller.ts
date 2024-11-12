@@ -9,7 +9,7 @@ import { CreateInquiryDto } from './dto/createInquiry.dto';
 export class InquiryController {
   constructor(private readonly inquiryService: InquiryService) {}
 
-  @Post('inquiry/createInquiry')
+  @Post('/createInquiry')
   @HttpCode(HttpStatus.OK)
   createInquiry(@Body() dto: CreateInquiryDto) {
     return this.inquiryService.createInquiry(dto);

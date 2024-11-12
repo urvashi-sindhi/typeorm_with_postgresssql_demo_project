@@ -12,19 +12,19 @@ import { ApiTag } from 'src/lib/utils/enum';
 import { LoginDto } from './dto/login.dto';
 
 @ApiTags(ApiTag.ADMIN)
-@Controller()
+@Controller('admin')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @ApiTags(ApiTag.ADMIN)
-  @Post('admin/login')
+  @Post('/login')
   @HttpCode(HttpStatus.OK)
   login(@Body() dto: LoginDto) {
     return this.userService.login(dto);
   }
 
   @HttpCode(HttpStatus.OK)
-  @Get('admin/listOfInquiries')
+  @Get('/listOfInquiries')
   listOfInquiries() {
     return this.userService.listOfInquiries();
   }
