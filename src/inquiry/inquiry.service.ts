@@ -7,7 +7,7 @@ import { Messages } from 'src/lib/utils/messages';
 import { Repository } from 'typeorm';
 
 @Injectable()
-export class UserService {
+export class InquiryService {
   constructor(
     @InjectRepository(Inquiry)
     private readonly inquiryRepository: Repository<Inquiry>,

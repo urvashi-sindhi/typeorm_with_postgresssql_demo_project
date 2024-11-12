@@ -13,5 +13,6 @@ export enum InquiryStatus {
 }
 
 export enum ApiTag {
+  INQUIRY = 'Inquiry',
   USER = 'User',
 }

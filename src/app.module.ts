@@ -3,10 +3,10 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { UserModule } from './user/user.module';
 import { User } from './lib/entities/user.entity';
 import * as dotenv from 'dotenv';
 import { Inquiry } from './lib/entities/inquiry.entity';
+import { InquiryModule } from './inquiry/inquiry.module';
 dotenv.config();
 
 const config: any = {
@@ -31,7 +31,7 @@ const config: any = {
       synchronize: true,
       logging: true,
     }),
-    UserModule,
+    InquiryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

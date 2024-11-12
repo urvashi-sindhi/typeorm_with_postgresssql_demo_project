@@ -12,19 +12,19 @@ export class Inquiry {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'varchar', length: 20, nullable: false })
+  @Column({ length: 20, nullable: false })
   first_name: string;
 
-  @Column({ type: 'varchar', length: 20, nullable: false })
+  @Column({ length: 20, nullable: false })
   last_name: string;
 
-  @Column({ type: 'varchar', length: 50, nullable: false, unique: true })
+  @Column({ length: 50, nullable: false, unique: true })
   email: string;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
+  @Column({ length: 255, default: 'null' })
   message: string;
 
-  @Column({ type: 'varchar', length: 20, nullable: false })
+  @Column({ length: 20, nullable: false })
   phone_number: string;
 
   @Column({
