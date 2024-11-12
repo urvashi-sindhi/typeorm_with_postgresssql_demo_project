@@ -13,7 +13,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
-export class UserService {
+export class InquiryService {
   constructor(
     @InjectRepository(Inquiry)
     private readonly inquiryRepository: Repository<Inquiry>,
