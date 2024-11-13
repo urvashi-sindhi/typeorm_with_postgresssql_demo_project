@@ -7,4 +7,11 @@ export enum Messages {
   ALREADY_EXIST = 'data already exists.',
   CREDENTIALS_NOT_MATCH = 'Your credentials does not match.',
   LOGIN_SUCCESS = 'You are login successfully.',
+  PASSWORD_CREDENTIALS = 'Password and confirm password should be same.',
+  UPDATE_SUCCESS = 'updated successfully.',
+  OTP_SENT = 'Otp send successfully.',
+  OTP_SUBJECT = 'Your Otp for update password',
+  OTP_EXPIRED = 'Your otp is expired.',
+  OTP_VALIDATION = 'Please enter correct otp.',
+  EMAIL_VALIDATION = 'Your email is not registered.',
 }

@@ -6,10 +6,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/lib/entities/user.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from 'src/lib/services/auth/strategy/jwt.strategy';
+import { Otp } from 'src/lib/entities/otp.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Inquiry, User]),
+    TypeOrmModule.forFeature([User, Inquiry, Otp]),
     JwtModule.register({
       secret: process.env.JWTSecretKey,
       signOptions: { expiresIn: '24h' },
