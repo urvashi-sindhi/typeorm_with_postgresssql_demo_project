@@ -31,19 +31,19 @@ export class UserController {
   @UseGuards(JwtGuard)
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
-  @Put('admin/resetPassword')
+  @Put('/resetPassword')
   resetPassword(@Req() req: any, @Body() dto: ResetPasswordDto) {
     return this.userService.resetPassword(req, dto);
   }
 
   @HttpCode(HttpStatus.OK)
-  @Post('admin/verifyEmail')
+  @Post('/verifyEmail')
   verifyEmail(@Body() dto: VerifyEmailDto) {
     return this.userService.verifyEmail(dto);
   }
 
   @HttpCode(HttpStatus.OK)
-  @Put('admin/forgotPassword')
+  @Put('/forgotPassword')
   forgotPassword(@Body() dto: ForgotPasswordDto) {
     return this.userService.forgotPassword(dto);
   }
