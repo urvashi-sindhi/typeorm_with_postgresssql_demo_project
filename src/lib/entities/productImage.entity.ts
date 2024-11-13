@@ -2,14 +2,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  OneToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { ProductImage } from './productImage.entity';
+import { Product } from './product.entity';
 
 @Entity()
-export class Product {
+export class ProductImage {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -32,6 +32,6 @@ export class Product {
   })
   updated_at: Date;
 
-  @OneToMany(() => ProductImage, (productImage) => productImage.product)
-  productImage: ProductImage[];
+  @ManyToOne(() => Product, (product) => product.productImage)
+  product: Product;
 }

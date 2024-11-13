@@ -10,12 +10,14 @@ import { JwtService } from '@nestjs/jwt';
 import { Otp } from './lib/entities/otp.entity';
 import { InquiryModule } from './inquiry/inquiry.module';
 import { UserModule } from './user/user.module';
+import { Product } from './lib/entities/product.entity';
+import { ProductImage } from './lib/entities/productImage.entity';
 dotenv.config();
 
 const config: any = {
   type: 'postgres',
   autoLoadEntities: true,
-  entities: [User, Inquiry, Otp],
+  entities: [User, Inquiry, Otp, Product, ProductImage],
   define: {
     timestamps: false,
   },
