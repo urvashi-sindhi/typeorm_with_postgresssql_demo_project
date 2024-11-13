@@ -8,7 +8,6 @@ import { Like, Repository } from 'typeorm';
 import { emailSend } from 'src/lib/helpers/mail';
 import { CreateInquiryDto } from './dto/createInquiry.dto';
 import { paginate } from 'src/lib/helpers/paginationService';
-import { ListOfFilterDto } from './dto/listOfInquiries.dto';
 
 @Injectable()
 export class InquiryService {
@@ -108,25 +107,25 @@ export class InquiryService {
     }
   }
 
-  async listOfInquiries(dto: ListOfFilterDto) {
-    const { sortKey, sortValue, searchBar } = dto;
-
+  async listOfInquiries(inquiryInfo: any) {
     let whereCondition = {};
 
-    if (searchBar) {
+    if (inquiryInfo.searchBar) {
       whereCondition = [
-        { first_name: Like(`%${searchBar}%`) },
-        { last_name: Like(`%${searchBar}%`) },
-        { email: Like(`%${searchBar}%`) },
-        { message: Like(`%${searchBar}%`) },
+        { first_name: Like(`%${inquiryInfo.searchBar}%`) },
+        { last_name: Like(`%${inquiryInfo.searchBar}%`) },
+        { email: Like(`%${inquiryInfo.searchBar}%`) },
+        { message: Like(`%${inquiryInfo.searchBar}%`) },
       ];
     }
 
-    const paginatedData = await paginate(dto, this.inquiryRepository);
+    const paginatedData = await paginate(inquiryInfo, this.inquiryRepository);
 
     const listOfInquiries = await this.inquiryRepository.find({
       where: whereCondition,
-      order: { [sortKey || 'id']: [sortValue || 'ASC'] },
+      order: {
+        [inquiryInfo.sortKey || 'id']: [inquiryInfo.sortValue || 'ASC'],
+      },
       take: paginatedData.pageSize,
       skip: paginatedData.skip,
       select: [

@@ -7,13 +7,13 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { InquiryService } from './inquiry.service';
-import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ApiTag } from 'src/lib/utils/enum';
 import { CreateInquiryDto } from './dto/createInquiry.dto';
-import { ListOfFilterDto } from './dto/listOfInquiries.dto';
 import { JwtGuard } from 'src/lib/services/auth/guard/jwt.guard';
 
 @ApiTags(ApiTag.INQUIRY)
@@ -32,7 +32,7 @@ export class InquiryController {
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
   @Get('/viewInquiry/:inquiryId')
-  viewInquiry(@Param('inquiryId') inquiryId: number) {
+  viewInquiry(@Query('inquiryId') inquiryId: number) {
     return this.inquiryService.viewInquiry(inquiryId);
   }
 
@@ -45,11 +45,58 @@ export class InquiryController {
     return this.inquiryService.updateInquiryStatus(inquiryId);
   }
 
+  @ApiQuery({
+    example: 'ASC',
+    name: 'sortValue',
+    type: 'string',
+    format: 'string',
+    required: false,
+  })
+  @ApiQuery({
+    example: 'id',
+    name: 'sortKey',
+    type: 'string',
+    format: 'string',
+    required: false,
+  })
+  @ApiQuery({
+    example: 10,
+    name: 'pageSize',
+    type: 'number',
+    format: 'number',
+    required: false,
+  })
+  @ApiQuery({
+    example: 1,
+    name: 'page',
+    type: 'number',
+    format: 'number',
+    required: false,
+  })
+  @ApiQuery({
+    example: 'Urvashi',
+    name: 'searchBar',
+    type: 'string',
+    format: 'string',
+    required: false,
+  })
   @UseGuards(JwtGuard)
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
-  @Post('/listOfInquiries')
-  listOfInquiries(@Body() dto: ListOfFilterDto) {
-    return this.inquiryService.listOfInquiries(dto);
+  @Get('/listOfInquiries')
+  listOfInquiries(
+    @Query('sortValue') sortValue: string,
+    @Query('sortKey') sortKey: string,
+    @Query('pageSize') pageSize: number,
+    @Query('page') page: number,
+    @Query('searchBar') searchBar: string,
+  ) {
+    return this.inquiryService.listOfInquiries({
+      sortValue,
+      sortKey,
+      pageSize,
+      page,
+      searchBar,
+    });
   }
 }
