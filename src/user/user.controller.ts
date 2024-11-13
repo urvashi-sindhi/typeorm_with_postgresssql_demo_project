@@ -1,37 +1,30 @@
 import {
-  Body,
   Controller,
-  Get,
+  Post,
+  Body,
   HttpCode,
   HttpStatus,
-  Post,
   Put,
   Req,
   UseGuards,
+  Get,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ApiTag } from 'src/lib/utils/enum';
-import { CreateInquiryDto } from './dto/createInquiry.dto';
 import { LoginDto } from './dto/login.dto';
 import { JwtGuard } from 'src/lib/services/auth/guard/jwt.guard';
 import { ResetPasswordDto } from './dto/resetPassword.dto';
 import { VerifyEmailDto } from './dto/verifyEmail.dto';
 import { ForgotPasswordDto } from './dto/forgotPassword.dto';
 
-@Controller()
+@ApiTags(ApiTag.ADMIN)
+@Controller('admin')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @ApiTags(ApiTag.INQUIRY)
-  @Post('inquiry/createInquiry')
-  @HttpCode(HttpStatus.OK)
-  createInquiry(@Body() dto: CreateInquiryDto) {
-    return this.userService.createInquiry(dto);
-  }
-
   @ApiTags(ApiTag.ADMIN)
-  @Post('admin/login')
+  @Post('/login')
   @HttpCode(HttpStatus.OK)
   login(@Body() dto: LoginDto) {
     return this.userService.login(dto);
@@ -62,7 +55,7 @@ export class UserController {
 
   @ApiTags(ApiTag.ADMIN)
   @HttpCode(HttpStatus.OK)
-  @Get('admin/listOfInquiries')
+  @Get('/listOfInquiries')
   listOfInquiries() {
     return this.userService.listOfInquiries();
   }
