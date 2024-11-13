@@ -10,7 +10,7 @@ import { Otp } from 'src/lib/entities/otp.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Inquiry, Otp]),
+    TypeOrmModule.forFeature([User, Otp]),
     JwtModule.register({
       secret: process.env.JWTSecretKey,
       signOptions: { expiresIn: '24h' },

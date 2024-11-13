@@ -2,11 +2,13 @@ import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Inquiry } from 'src/lib/entities/inquiry.entity';
 import { handleResponse } from 'src/lib/helpers/handleResponse';
-import { ResponseStatus } from 'src/lib/utils/enum';
+import { InquiryStatus, ResponseStatus } from 'src/lib/utils/enum';
 import { Messages } from 'src/lib/utils/messages';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { emailSend } from 'src/lib/helpers/mail';
 import { CreateInquiryDto } from './dto/createInquiry.dto';
+import { paginate } from 'src/lib/helpers/paginationService';
+import { pagination } from 'src/lib/helpers/commonPagination';
 
 @Injectable()
 export class InquiryService {
@@ -43,15 +45,26 @@ export class InquiryService {
     }
   }
 
-  async listOfInquiries() {
-    const inquiryList = await this.inquiryRepository.find();
+  async viewInquiry(inquiryId: number) {
+    const inquiryDetails = await this.inquiryRepository.findOne({
+      where: { id: inquiryId },
+      select: [
+        'id',
+        'first_name',
+        'last_name',
+        'email',
+        'message',
+        'phone_number',
+        'status',
+      ],
+    });
 
-    if (inquiryList.length <= 0) {
-      Logger.error(`Inquiry details ${Messages.NOT_FOUND}`);
+    if (!inquiryDetails) {
+      Logger.error(`Inquiry ${Messages.NOT_FOUND}`);
       return handleResponse(
         HttpStatus.NOT_FOUND,
         ResponseStatus.ERROR,
-        `Inquiry details ${Messages.NOT_FOUND}`,
+        `Inquiry ${Messages.NOT_FOUND}`,
       );
     }
 
@@ -60,7 +73,93 @@ export class InquiryService {
       HttpStatus.OK,
       ResponseStatus.SUCCESS,
       undefined,
-      inquiryList,
+      inquiryDetails,
     );
+  }
+
+  async updateInquiryStatus(inquiryId: number) {
+    const findInquiry = await this.inquiryRepository.findOne({
+      where: { id: inquiryId, status: InquiryStatus.PENDING },
+    });
+
+    if (!findInquiry) {
+      Logger.error(`Inquiry ${Messages.NOT_FOUND}`);
+      return handleResponse(
+        HttpStatus.NOT_FOUND,
+        ResponseStatus.ERROR,
+        `Inquiry ${Messages.NOT_FOUND}`,
+      );
+    }
+
+    const inquiryStatus = await this.inquiryRepository.update(
+      { id: inquiryId, status: InquiryStatus.PENDING },
+      {
+        status: InquiryStatus.RESOLVE,
+      },
+    );
+
+    if (inquiryStatus.affected > 0) {
+      Logger.log(`Inquiry status ${Messages.UPDATE_SUCCESS}`);
+      return handleResponse(
+        HttpStatus.ACCEPTED,
+        ResponseStatus.SUCCESS,
+        `Inquiry status ${Messages.UPDATE_SUCCESS}`,
+      );
+    }
+  }
+
+  async listOfInquiries(inquiryInfo: any) {
+    let whereCondition = {};
+
+    if (inquiryInfo.searchBar) {
+      whereCondition = [
+        { first_name: Like(`%${inquiryInfo.searchBar}%`) },
+        { last_name: Like(`%${inquiryInfo.searchBar}%`) },
+        { email: Like(`%${inquiryInfo.searchBar}%`) },
+        { message: Like(`%${inquiryInfo.searchBar}%`) },
+      ];
+    }
+
+    const paginatedData = await paginate(inquiryInfo, this.inquiryRepository);
+
+    const sortQuery = await pagination(
+      inquiryInfo.sortKey,
+      inquiryInfo.sortValue,
+    );
+
+    const listOfInquiries = await this.inquiryRepository.find({
+      where: whereCondition,
+      order: sortQuery,
+      take: paginatedData.pageSize,
+      skip: paginatedData.skip,
+      select: [
+        'id',
+        'first_name',
+        'last_name',
+        'email',
+        'message',
+        'phone_number',
+        'status',
+      ],
+    });
+
+    if (listOfInquiries.length <= 0) {
+      Logger.error(`Inquiry ${Messages.NOT_FOUND}`);
+      return handleResponse(
+        HttpStatus.NOT_FOUND,
+        ResponseStatus.ERROR,
+        `Inquiry ${Messages.NOT_FOUND}`,
+      );
+    }
+
+    Logger.log(`Inquiry ${Messages.GET_SUCCESS}`);
+    return handleResponse(HttpStatus.OK, ResponseStatus.SUCCESS, undefined, {
+      listOfInquiries,
+      totalPages: paginatedData?.totalPages,
+      totalRecordsCount: paginatedData?.totalRecordsCount,
+      currentPage: paginatedData?.currentPage,
+      numberOfRows: listOfInquiries.length,
+      limit: paginatedData?.limit,
+    });
   }
 }
