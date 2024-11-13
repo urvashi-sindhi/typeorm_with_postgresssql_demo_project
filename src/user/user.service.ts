@@ -81,11 +81,11 @@ export class UserService {
     });
 
     if (!findUser) {
-      Logger.error(Messages.EMAIL_VALIDATION);
+      Logger.error(`User ${Messages.NOT_FOUND}`);
       return handleResponse(
         HttpStatus.NOT_FOUND,
         ResponseStatus.ERROR,
-        Messages.EMAIL_VALIDATION,
+        `User ${Messages.NOT_FOUND}`,
       );
     }
 
@@ -175,7 +175,7 @@ export class UserService {
     if (!findOtp) {
       Logger.error(Messages.OTP_VALIDATION);
       return handleResponse(
-        HttpStatus.NOT_FOUND,
+        HttpStatus.BAD_REQUEST,
         ResponseStatus.ERROR,
         Messages.OTP_VALIDATION,
       );
