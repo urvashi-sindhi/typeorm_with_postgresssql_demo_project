@@ -28,7 +28,6 @@ export class UserController {
     return this.userService.login(dto);
   }
 
-  @ApiTags(ApiTag.ADMIN)
   @UseGuards(JwtGuard)
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
@@ -37,14 +36,12 @@ export class UserController {
     return this.userService.resetPassword(req, dto);
   }
 
-  @ApiTags(ApiTag.ADMIN)
   @HttpCode(HttpStatus.OK)
   @Post('admin/verifyEmail')
   verifyEmail(@Body() dto: VerifyEmailDto) {
     return this.userService.verifyEmail(dto);
   }
 
-  @ApiTags(ApiTag.ADMIN)
   @HttpCode(HttpStatus.OK)
   @Put('admin/forgotPassword')
   forgotPassword(@Body() dto: ForgotPasswordDto) {
