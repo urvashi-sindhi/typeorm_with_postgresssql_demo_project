@@ -4,21 +4,18 @@ import {
   Body,
   HttpCode,
   HttpStatus,
-  Param,
   Put,
   UseGuards,
   Req,
-  Get,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ApiTag } from 'src/lib/utils/enum';
 import { LoginDto } from './dto/login.dto';
 import { JwtGuard } from 'src/lib/services/auth/guard/jwt.guard';
 import { ResetPasswordDto } from './dto/resetPassword.dto';
 import { VerifyEmailDto } from './dto/verifyEmail.dto';
 import { ForgotPasswordDto } from './dto/forgotPassword.dto';
-import { ListOfFilterDto } from '../inquiry/dto/listOfInquiries.dto';
 
 @ApiTags(ApiTag.ADMIN)
 @Controller('admin')
@@ -49,19 +46,5 @@ export class UserController {
   @Put('/forgotPassword')
   forgotPassword(@Body() dto: ForgotPasswordDto) {
     return this.userService.forgotPassword(dto);
-  }
-
-  @ApiParam({ example: 1, name: 'inquiryId', required: true })
-  @HttpCode(HttpStatus.OK)
-  @Get('/viewInquiry/:inquiryId')
-  viewInquiry(@Param('inquiryId') inquiryId: number) {
-    return this.userService.viewInquiry(inquiryId);
-  }
-
-  @ApiParam({ example: 1, name: 'inquiryId', required: true })
-  @HttpCode(HttpStatus.OK)
-  @Put('/updateInquiryStatus/:inquiryId')
-  updateInquiryStatus(@Param('inquiryId') inquiryId: number) {
-    return this.userService.updateInquiryStatus(inquiryId);
   }
 }
