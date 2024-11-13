@@ -3,12 +3,13 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { UserModule } from './user/user.module';
 import { User } from './lib/entities/user.entity';
 import * as dotenv from 'dotenv';
 import { Inquiry } from './lib/entities/inquiry.entity';
 import { JwtService } from '@nestjs/jwt';
 import { Otp } from './lib/entities/otp.entity';
+import { InquiryModule } from './inquiry/inquiry.module';
+import { UserModule } from './user/user.module';
 dotenv.config();
 
 const config: any = {
@@ -31,8 +32,9 @@ const config: any = {
       username: process.env.DATABASE_USERS,
       database: process.env.DATABASE_NAME,
       synchronize: true,
-      logging: true,
+      logging: false,
     }),
+    InquiryModule,
     UserModule,
   ],
   controllers: [AppController],

@@ -1,67 +1,29 @@
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Inquiry } from 'src/lib/entities/inquiry.entity';
-import { handleResponse } from 'src/lib/helpers/handleResponse';
-import {
-  ConstantValues,
-  InquiryStatus,
-  ResponseStatus,
-} from 'src/lib/utils/enum';
-import { Messages } from 'src/lib/utils/messages';
-import { Like, Repository } from 'typeorm';
-import { CreateInquiryDto } from './dto/createInquiry.dto';
-import { emailSend } from 'src/lib/helpers/mail';
-import { LoginDto } from './dto/login.dto';
-import { User } from 'src/lib/entities/user.entity';
-import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/lib/entities/user.entity';
+import { Repository } from 'typeorm';
+import { LoginDto } from './dto/login.dto';
+import { Messages } from 'src/lib/utils/messages';
+import { handleResponse } from 'src/lib/helpers/handleResponse';
+import { ConstantValues, ResponseStatus } from 'src/lib/utils/enum';
+import * as bcrypt from 'bcrypt';
 import { ResetPasswordDto } from './dto/resetPassword.dto';
 import { VerifyEmailDto } from './dto/verifyEmail.dto';
 import * as moment from 'moment';
 import { Otp } from 'src/lib/entities/otp.entity';
 import { ForgotPasswordDto } from './dto/forgotPassword.dto';
-import { ListOfFilterDto } from './dto/listOfInquiries.dto';
-import { paginate } from 'src/lib/helpers/paginationService';
+import { emailSend } from 'src/lib/helpers/mail';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(Inquiry)
-    private readonly inquiryRepository: Repository<Inquiry>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     @InjectRepository(Otp)
     private readonly otpRepository: Repository<Otp>,
     private jwt: JwtService,
   ) {}
-
-  async createInquiry(dto: CreateInquiryDto) {
-    const findInquiry = await this.inquiryRepository.findOne({
-      where: { email: dto.email },
-    });
-
-    if (findInquiry) {
-      Logger.error(`Inquiry ${Messages.ALREADY_EXIST}`);
-      return handleResponse(
-        HttpStatus.CONFLICT,
-        ResponseStatus.ERROR,
-        `Inquiry ${Messages.ALREADY_EXIST}`,
-      );
-    }
-
-    const createInquiry = await this.inquiryRepository.save({ ...dto });
-
-    if (createInquiry) {
-      await emailSend(createInquiry);
-      Logger.log(`Inquiry ${Messages.ADDED_SUCCESS}`);
-      return handleResponse(
-        HttpStatus.CREATED,
-        ResponseStatus.SUCCESS,
-        `Inquiry ${Messages.ADDED_SUCCESS}`,
-        { id: createInquiry.id },
-      );
-    }
-  }
 
   async login(dto: LoginDto) {
     const findUser = await this.userRepository.findOne({
@@ -87,7 +49,7 @@ export class UserService {
     if (!comparePassword) {
       Logger.error(Messages.CREDENTIALS_NOT_MATCH);
       return handleResponse(
-        HttpStatus.UNAUTHORIZED,
+        HttpStatus.BAD_REQUEST,
         ResponseStatus.ERROR,
         Messages.CREDENTIALS_NOT_MATCH,
         undefined,
@@ -119,11 +81,11 @@ export class UserService {
     });
 
     if (!findUser) {
-      Logger.error(Messages.CREDENTIALS_NOT_MATCH);
+      Logger.error(`User ${Messages.NOT_FOUND}`);
       return handleResponse(
         HttpStatus.NOT_FOUND,
         ResponseStatus.ERROR,
-        Messages.CREDENTIALS_NOT_MATCH,
+        `User ${Messages.NOT_FOUND}`,
       );
     }
 
@@ -135,7 +97,7 @@ export class UserService {
     if (!validPassword) {
       Logger.error(Messages.CREDENTIALS_NOT_MATCH);
       return handleResponse(
-        HttpStatus.UNAUTHORIZED,
+        HttpStatus.BAD_REQUEST,
         ResponseStatus.ERROR,
         Messages.CREDENTIALS_NOT_MATCH,
       );
@@ -213,7 +175,7 @@ export class UserService {
     if (!findOtp) {
       Logger.error(Messages.OTP_VALIDATION);
       return handleResponse(
-        HttpStatus.NOT_FOUND,
+        HttpStatus.BAD_REQUEST,
         ResponseStatus.ERROR,
         Messages.OTP_VALIDATION,
       );
@@ -224,11 +186,11 @@ export class UserService {
     });
 
     if (!findEmail) {
-      Logger.error(`Email ${Messages.NOT_FOUND}`);
+      Logger.error(Messages.EMAIL_VALIDATION);
       return handleResponse(
         HttpStatus.NOT_FOUND,
         ResponseStatus.ERROR,
-        `Email ${Messages.NOT_FOUND}`,
+        Messages.EMAIL_VALIDATION,
       );
     }
 
@@ -269,120 +231,5 @@ export class UserService {
         );
       }
     }
-  }
-
-  async viewInquiry(inquiryId: number) {
-    const inquiryDetails = await this.inquiryRepository.findOne({
-      where: { id: inquiryId },
-      select: [
-        'id',
-        'first_name',
-        'last_name',
-        'email',
-        'message',
-        'phone_number',
-        'status',
-      ],
-    });
-
-    if (!inquiryDetails) {
-      Logger.error(`Inquiry ${Messages.NOT_FOUND}`);
-      return handleResponse(
-        HttpStatus.NOT_FOUND,
-        ResponseStatus.ERROR,
-        `Inquiry ${Messages.NOT_FOUND}`,
-      );
-    }
-
-    Logger.log(`Inquiry ${Messages.GET_SUCCESS}`);
-    return handleResponse(
-      HttpStatus.OK,
-      ResponseStatus.SUCCESS,
-      undefined,
-      inquiryDetails,
-    );
-  }
-
-  async updateInquiryStatus(inquiryId: number) {
-    const findInquiry = await this.inquiryRepository.findOne({
-      where: { id: inquiryId, status: InquiryStatus.PENDING },
-    });
-
-    if (!findInquiry) {
-      Logger.error(`Inquiry data ${Messages.NOT_FOUND}`);
-      return handleResponse(
-        HttpStatus.NOT_FOUND,
-        ResponseStatus.ERROR,
-        `Inquiry data ${Messages.NOT_FOUND}`,
-      );
-    }
-
-    const inquiryStatus = await this.inquiryRepository.update(
-      { id: inquiryId, status: InquiryStatus.PENDING },
-      {
-        status: InquiryStatus.RESOLVE,
-      },
-    );
-
-    if (inquiryStatus.affected > 0) {
-      Logger.log(`Inquiry status ${Messages.UPDATE_SUCCESS}`);
-      return handleResponse(
-        HttpStatus.ACCEPTED,
-        ResponseStatus.SUCCESS,
-        `Inquiry status ${Messages.UPDATE_SUCCESS}`,
-      );
-    }
-  }
-
-  async listOfInquiries(dto: ListOfFilterDto) {
-    const { sortKey, sortValue, searchBar } = dto;
-
-    let whereCondition = {};
-
-    if (searchBar) {
-      whereCondition = [
-        { first_name: Like(`%${searchBar}%`) },
-        { last_name: Like(`%${searchBar}%`) },
-        { email: Like(`%${searchBar}%`) },
-        { message: Like(`%${searchBar}%`) },
-      ];
-    }
-
-    const paginatedData = await paginate(dto, this.inquiryRepository);
-
-    const listOfInquiries = await this.inquiryRepository.find({
-      where: whereCondition,
-      order: { [sortKey || 'id']: [sortValue || 'ASC'] },
-      take: paginatedData.pageSize,
-      skip: paginatedData.skip,
-      select: [
-        'id',
-        'first_name',
-        'last_name',
-        'email',
-        'message',
-        'phone_number',
-        'status',
-      ],
-    });
-
-    if (listOfInquiries.length <= 0) {
-      Logger.error(`Inquiry ${Messages.NOT_FOUND}`);
-      return handleResponse(
-        HttpStatus.NOT_FOUND,
-        ResponseStatus.ERROR,
-        `Inquiry ${Messages.NOT_FOUND}`,
-      );
-    }
-
-    Logger.log(`Inquiry ${Messages.GET_SUCCESS}`);
-    return handleResponse(HttpStatus.OK, ResponseStatus.SUCCESS, undefined, {
-      listOfInquiries,
-      totalPages: paginatedData?.totalPages,
-      totalRecordsCount: paginatedData?.totalRecordsCount,
-      currentPage: paginatedData?.currentPage,
-      numberOfRows: listOfInquiries.length,
-      limit: paginatedData?.limit,
-    });
   }
 }

@@ -5,12 +5,12 @@ export class Otp {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'int', nullable: false })
+  @Column({ nullable: false })
   otp: number;
 
-  @Column({ type: 'varchar', nullable: false })
+  @Column({ nullable: false })
   expiration_time: string;
 
-  @Column({ type: 'varchar', length: 50, nullable: false })
+  @Column({ length: 50, nullable: false })
   email: string;
 }
