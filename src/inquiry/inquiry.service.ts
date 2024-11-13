@@ -8,6 +8,7 @@ import { Like, Repository } from 'typeorm';
 import { emailSend } from 'src/lib/helpers/mail';
 import { CreateInquiryDto } from './dto/createInquiry.dto';
 import { paginate } from 'src/lib/helpers/paginationService';
+import { pagination } from 'src/lib/helpers/commonPagination';
 
 @Injectable()
 export class InquiryService {
@@ -121,11 +122,14 @@ export class InquiryService {
 
     const paginatedData = await paginate(inquiryInfo, this.inquiryRepository);
 
+    const sortQuery = await pagination(
+      inquiryInfo.sortKey,
+      inquiryInfo.sortValue,
+    );
+
     const listOfInquiries = await this.inquiryRepository.find({
       where: whereCondition,
-      order: {
-        [inquiryInfo.sortKey || 'id']: [inquiryInfo.sortValue || 'ASC'],
-      },
+      order: sortQuery,
       take: paginatedData.pageSize,
       skip: paginatedData.skip,
       select: [

@@ -46,38 +46,29 @@ export class InquiryController {
   }
 
   @ApiQuery({
-    example: 'ASC',
-    name: 'sortValue',
-    type: 'string',
-    format: 'string',
-    required: false,
-  })
-  @ApiQuery({
-    example: 'id',
     name: 'sortKey',
-    type: 'string',
-    format: 'string',
+    type: String,
     required: false,
   })
   @ApiQuery({
-    example: 10,
+    name: 'sortValue',
+    type: String,
+    enum: ['asc', 'desc'],
+    required: false,
+  })
+  @ApiQuery({
     name: 'pageSize',
     type: 'number',
-    format: 'number',
     required: false,
   })
   @ApiQuery({
-    example: 1,
     name: 'page',
     type: 'number',
-    format: 'number',
     required: false,
   })
   @ApiQuery({
-    example: 'Urvashi',
     name: 'searchBar',
     type: 'string',
-    format: 'string',
     required: false,
   })
   @UseGuards(JwtGuard)
@@ -85,8 +76,8 @@ export class InquiryController {
   @HttpCode(HttpStatus.OK)
   @Get('/listOfInquiries')
   listOfInquiries(
-    @Query('sortValue') sortValue: string,
     @Query('sortKey') sortKey: string,
+    @Query('sortValue') sortValue: string,
     @Query('pageSize') pageSize: number,
     @Query('page') page: number,
     @Query('searchBar') searchBar: string,
