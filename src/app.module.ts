@@ -15,7 +15,7 @@ dotenv.config();
 const config: any = {
   type: 'postgres',
   autoLoadEntities: true,
-  entities: [User, Inquiry, Otp],
+  entities: [Inquiry, User, Otp],
   define: {
     timestamps: false,
   },

@@ -10,9 +10,9 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { ApiTag } from 'src/lib/utils/enum';
+import { ApiTag } from '../lib/utils/enum';
 import { LoginDto } from './dto/login.dto';
-import { JwtGuard } from 'src/lib/services/auth/guard/jwt.guard';
+import { JwtGuard } from '../lib/services/auth/guard/jwt.guard';
 import { ResetPasswordDto } from './dto/resetPassword.dto';
 import { VerifyEmailDto } from './dto/verifyEmail.dto';
 import { ForgotPasswordDto } from './dto/forgotPassword.dto';
