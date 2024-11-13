@@ -5,9 +5,8 @@ import {
   HttpCode,
   HttpStatus,
   Put,
-  Req,
   UseGuards,
-  Get,
+  Req,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -23,7 +22,6 @@ import { ForgotPasswordDto } from './dto/forgotPassword.dto';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @ApiTags(ApiTag.ADMIN)
   @Post('/login')
   @HttpCode(HttpStatus.OK)
   login(@Body() dto: LoginDto) {
@@ -51,12 +49,5 @@ export class UserController {
   @Put('admin/forgotPassword')
   forgotPassword(@Body() dto: ForgotPasswordDto) {
     return this.userService.forgotPassword(dto);
-  }
-
-  @ApiTags(ApiTag.ADMIN)
-  @HttpCode(HttpStatus.OK)
-  @Get('/listOfInquiries')
-  listOfInquiries() {
-    return this.userService.listOfInquiries();
   }
 }

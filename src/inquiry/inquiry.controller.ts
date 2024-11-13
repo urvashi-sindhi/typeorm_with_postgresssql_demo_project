@@ -1,4 +1,11 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+} from '@nestjs/common';
 import { InquiryService } from './inquiry.service';
 import { ApiTags } from '@nestjs/swagger';
 import { ApiTag } from 'src/lib/utils/enum';
@@ -13,5 +20,11 @@ export class InquiryController {
   @HttpCode(HttpStatus.OK)
   createInquiry(@Body() dto: CreateInquiryDto) {
     return this.inquiryService.createInquiry(dto);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Get('/listOfInquiries')
+  listOfInquiries() {
+    return this.inquiryService.listOfInquiries();
   }
 }

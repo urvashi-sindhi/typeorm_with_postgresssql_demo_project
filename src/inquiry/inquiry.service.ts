@@ -42,4 +42,25 @@ export class InquiryService {
       );
     }
   }
+
+  async listOfInquiries() {
+    const inquiryList = await this.inquiryRepository.find();
+
+    if (inquiryList.length <= 0) {
+      Logger.error(`Inquiry details ${Messages.NOT_FOUND}`);
+      return handleResponse(
+        HttpStatus.NOT_FOUND,
+        ResponseStatus.ERROR,
+        `Inquiry details ${Messages.NOT_FOUND}`,
+      );
+    }
+
+    Logger.log(`Inquiry ${Messages.GET_SUCCESS}`);
+    return handleResponse(
+      HttpStatus.OK,
+      ResponseStatus.SUCCESS,
+      undefined,
+      inquiryList,
+    );
+  }
 }
