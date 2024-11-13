@@ -1,15 +1,9 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { InquiryService } from './inquiry.service';
 import { ApiTags } from '@nestjs/swagger';
 import { ApiTag } from 'src/lib/utils/enum';
 import { CreateInquiryDto } from './dto/createInquiry.dto';
+import { ListOfFilterDto } from './dto/listOfInquiries.dto';
 
 @ApiTags(ApiTag.INQUIRY)
 @Controller('inquiry')
@@ -23,8 +17,8 @@ export class InquiryController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @Get('/listOfInquiries')
-  listOfInquiries() {
-    return this.inquiryService.listOfInquiries();
+  @Post('/listOfInquiries')
+  listOfInquiries(@Body() dto: ListOfFilterDto) {
+    return this.inquiryService.listOfInquiries(dto);
   }
 }
