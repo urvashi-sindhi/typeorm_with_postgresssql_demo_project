@@ -81,11 +81,11 @@ export class UserService {
     });
 
     if (!findUser) {
-      Logger.error(Messages.CREDENTIALS_NOT_MATCH);
+      Logger.error(Messages.EMAIL_VALIDATION);
       return handleResponse(
         HttpStatus.NOT_FOUND,
         ResponseStatus.ERROR,
-        Messages.CREDENTIALS_NOT_MATCH,
+        Messages.EMAIL_VALIDATION,
       );
     }
 
@@ -97,7 +97,7 @@ export class UserService {
     if (!validPassword) {
       Logger.error(Messages.CREDENTIALS_NOT_MATCH);
       return handleResponse(
-        HttpStatus.UNAUTHORIZED,
+        HttpStatus.BAD_REQUEST,
         ResponseStatus.ERROR,
         Messages.CREDENTIALS_NOT_MATCH,
       );
@@ -186,11 +186,11 @@ export class UserService {
     });
 
     if (!findEmail) {
-      Logger.error(`Email ${Messages.NOT_FOUND}`);
+      Logger.error(Messages.EMAIL_VALIDATION);
       return handleResponse(
         HttpStatus.NOT_FOUND,
         ResponseStatus.ERROR,
-        `Email ${Messages.NOT_FOUND}`,
+        Messages.EMAIL_VALIDATION,
       );
     }
 
