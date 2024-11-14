@@ -7,6 +7,10 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { ProductImage } from './productImage.entity';
+import { ProductBenefit } from './productBenefit.entity';
+import { ProductExpertise } from './productExpertise.entity';
+import { ProductMethodology } from './productMethodology.entity';
+import { ProductService } from './productService.entity';
 
 @Entity()
 export class Product {
@@ -18,6 +22,9 @@ export class Product {
 
   @Column({ default: null, length: 255 })
   description: string;
+
+  @Column({ length: 255, nullable: false })
+  contact_us: string;
 
   @CreateDateColumn({
     type: 'timestamp',
@@ -32,6 +39,30 @@ export class Product {
   })
   updated_at: Date;
 
-  @OneToMany(() => ProductImage, (productImage) => productImage.product)
+  @OneToMany(() => ProductImage, (productImage) => productImage.product_id)
   productImage: ProductImage[];
+
+  @OneToMany(
+    () => ProductBenefit,
+    (productBenefit) => productBenefit.product_id,
+  )
+  productBenefit: ProductBenefit[];
+
+  @OneToMany(
+    () => ProductExpertise,
+    (productExpertise) => productExpertise.product_id,
+  )
+  productExpertise: ProductExpertise[];
+
+  @OneToMany(
+    () => ProductMethodology,
+    (productMethodology) => productMethodology.product_id,
+  )
+  productMethodology: ProductMethodology[];
+
+  @OneToMany(
+    () => ProductService,
+    (productService) => productService.product_id,
+  )
+  productService: ProductService[];
 }

@@ -4,27 +4,20 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Product } from './product.entity';
+import { ProductServiceDetails } from './productServiceDetails.entity';
 
 @Entity()
-export class ProductImage {
+export class ProductService {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ length: 250, nullable: false })
-  overview_image: string;
-
-  @Column({ length: 250, nullable: false })
-  service_image: string;
-
-  @Column({ length: 250, nullable: false })
-  right_sidebar_image_1: string;
-
-  @Column({ length: 250, nullable: false })
-  right_sidebar_image_2: string;
+  @Column({ length: 50, nullable: false })
+  product_service_type: string;
 
   @CreateDateColumn({
     type: 'timestamp',
@@ -39,8 +32,14 @@ export class ProductImage {
   })
   updated_at: Date;
 
-  @ManyToOne(() => Product, (product) => product.productImage)
+  @ManyToOne(() => Product, (product) => product.productService)
   @JoinColumn({ name: 'product_id' })
   @Column({ nullable: false })
   product_id: number;
+
+  @OneToMany(
+    () => ProductServiceDetails,
+    (productServiceDetails) => productServiceDetails.product_service_id,
+  )
+  productServiceDetails: ProductServiceDetails[];
 }

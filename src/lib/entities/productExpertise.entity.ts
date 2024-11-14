@@ -10,21 +10,15 @@ import {
 import { Product } from './product.entity';
 
 @Entity()
-export class ProductImage {
+export class ProductExpertise {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ length: 250, nullable: false })
-  overview_image: string;
+  @Column({ length: 50, nullable: false })
+  expertise_area: string;
 
-  @Column({ length: 250, nullable: false })
-  service_image: string;
-
-  @Column({ length: 250, nullable: false })
-  right_sidebar_image_1: string;
-
-  @Column({ length: 250, nullable: false })
-  right_sidebar_image_2: string;
+  @Column({ length: 250, default: null })
+  expertise_description: string;
 
   @CreateDateColumn({
     type: 'timestamp',
@@ -39,7 +33,7 @@ export class ProductImage {
   })
   updated_at: Date;
 
-  @ManyToOne(() => Product, (product) => product.productImage)
+  @ManyToOne(() => Product, (product) => product.productExpertise)
   @JoinColumn({ name: 'product_id' })
   @Column({ nullable: false })
   product_id: number;
