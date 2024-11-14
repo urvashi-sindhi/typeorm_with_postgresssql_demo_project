@@ -121,7 +121,7 @@ export class ProductServices {
         }
 
         if (product_service) {
-          for (let item of product_service) {
+          for (const item of product_service) {
             const productServiceDetail = {
               product_service_type: item.type,
               product_id: productId,
@@ -134,7 +134,7 @@ export class ProductServices {
 
             const productServiceId = createProductService.raw[0].id;
 
-            for (let value of item.product_service_detail) {
+            for (const value of item.product_service_detail) {
               await queryRunner.manager.save(ProductServiceDetails, {
                 product_service_detail: value,
                 product_service_id: productServiceId,
@@ -290,7 +290,7 @@ export class ProductServices {
           product_id: productId,
         });
 
-        for (let item of product_service) {
+        for (const item of product_service) {
           const productServiceDetail = {
             product_service_type: item.type,
             product_id: productId,
@@ -303,7 +303,7 @@ export class ProductServices {
 
           const productServiceId = createProductService.raw[0].id;
 
-          for (let value of item.product_service_detail) {
+          for (const value of item.product_service_detail) {
             await queryRunner.manager.save(ProductServiceDetails, {
               product_service_detail: value,
               product_service_id: productServiceId,
