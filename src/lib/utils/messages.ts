@@ -16,4 +16,5 @@ export enum Messages {
   EMAIL_VALIDATION = 'Your email is not registered.',
   IMAGE_REQUIRE = 'Image should be required.',
   SERVER_ERROR = 'Internal server error',
+  DELETE_SUCCESS = 'data deleted successfully.',
 }
