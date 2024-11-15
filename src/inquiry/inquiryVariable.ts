@@ -2,9 +2,35 @@ import { InquiryStatus } from '../lib/utils/enum';
 
 export const inquiry = {
   createInquiry: {
-    first_name: 'Saloni',
+    first_name: 'test',
     last_name: 'Sindhi',
-    email: 'saloni10@gmail.com',
+    email: 'test17@gmail.com',
+    message: 'Please provide messages.',
+    phone_number: '+91-9988772211',
+    status: 'Pending',
+  },
+
+  checkValidationType: {
+    first_name: 990,
+    last_name: 'Sindhi',
+    email: 'test6@gmail.com',
+    message: 'Please provide messages.',
+    phone_number: '+91-9988772211',
+    status: 'Pending',
+  },
+
+  requiredValidation: {
+    first_name: 'testt',
+    email: 'test6@gmail.com',
+    message: 'Please provide messages.',
+    phone_number: '+91-9988772211',
+    status: 'Pending',
+  },
+
+  checkEmailValidationFormat: {
+    first_name: 'testtt',
+    last_name: 'Sindhi',
+    email: 'test1gmail.com',
     message: 'Please provide messages.',
     phone_number: '+91-9988772211',
     status: 'Pending',
@@ -36,6 +62,6 @@ export const inquiry = {
     sortKey: 'id',
     pageSize: 10,
     page: 1,
-    searchBar: 'xyz',
+    searchBar: 'dsa',
   },
 };
