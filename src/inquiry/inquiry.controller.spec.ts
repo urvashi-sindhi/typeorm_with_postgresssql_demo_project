@@ -152,33 +152,35 @@ describe('InquiryController', () => {
 
   describe('GET /api/inquiry/listOfInquiries', () => {
     it('should be give success message if list of inquiry get successfully', async () => {
-      const login: any = await request
-        .post(
+      const productInfo = await request
+        .get(
           `/inquiry/listOfInquiries?${inquiry.pagination.sortKey}?${inquiry.pagination.sortValue}?${inquiry.pagination.pageSize}?${inquiry.pagination.page}${inquiry.pagination.searchBar}`,
         )
         .set('Authorization', Token.ADMIN_TOKEN)
         .expect(HttpStatus.OK);
 
-      expect(login._body.statusCode).toEqual(HttpStatus.OK);
-      expect(login._body.status).toEqual(ResponseStatus.SUCCESS);
+      expect(productInfo._body.statusCode).toEqual(HttpStatus.OK);
+      expect(productInfo._body.status).toEqual(ResponseStatus.SUCCESS);
     });
 
     it('should be give error message if list of inquiry not get', async () => {
-      const login: any = await request
-        .post(
+      const productInfo = await request
+        .get(
           `/inquiry/listOfInquiries?${inquiry.wrongPagination.sortKey}?${inquiry.wrongPagination.sortValue}?${inquiry.wrongPagination.pageSize}?${inquiry.wrongPagination.page}${inquiry.wrongPagination.searchBar}`,
         )
         .set('Authorization', Token.ADMIN_TOKEN)
         .expect(HttpStatus.OK);
 
-      expect(login._body.statusCode).toEqual(HttpStatus.NOT_FOUND);
-      expect(login._body.status).toEqual(ResponseStatus.ERROR);
-      expect(login._body.message).toContain(`Inquiry ${Messages.NOT_FOUND}`);
+      expect(productInfo._body.statusCode).toEqual(HttpStatus.NOT_FOUND);
+      expect(productInfo._body.status).toEqual(ResponseStatus.ERROR);
+      expect(productInfo._body.message).toContain(
+        `Inquiry ${Messages.NOT_FOUND}`,
+      );
     });
 
     it('should give error message when the token is not added.', async () => {
       const viewInquiry = await request
-        .post(`/inquiry/listOfInquiries`)
+        .get(`/inquiry/listOfInquiries`)
         .expect(HttpStatus.UNAUTHORIZED);
 
       expect(viewInquiry._body.statusCode).toEqual(HttpStatus.UNAUTHORIZED);

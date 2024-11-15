@@ -49,7 +49,7 @@ describe('UserController', () => {
 
   describe('POST /api/admin/login', () => {
     it('should be give success message login successfully', async () => {
-      const login: any = await request
+      const login = await request
         .post('/admin/login')
         .send(user.login)
         .expect(HttpStatus.OK);
@@ -60,7 +60,7 @@ describe('UserController', () => {
     });
 
     it('should be give error message credential does not match ', async () => {
-      const login: any = await request
+      const login = await request
         .post('/admin/login')
         .send(user.incorrectCredential)
         .expect(HttpStatus.OK);
@@ -71,7 +71,7 @@ describe('UserController', () => {
     });
 
     it('should be give error message credential does not match when email is incorrect ', async () => {
-      const login: any = await request
+      const login = await request
         .post('/admin/login')
         .send(user.incorrectEmail)
         .expect(HttpStatus.OK);
@@ -89,7 +89,7 @@ describe('UserController', () => {
     });
 
     it('should give error message you are not register when email is incorrect ', async () => {
-      const verifyEmail: any = await request
+      const verifyEmail = await request
         .post('/admin/verifyEmail')
         .send(user.incorrectEmail)
         .expect(HttpStatus.OK);
@@ -100,7 +100,7 @@ describe('UserController', () => {
     });
 
     it('should give success message your email is verify', async () => {
-      const verifyEmail: any = await request
+      const verifyEmail = await request
         .post('/admin/verifyEmail')
         .send(user.verifyEmail)
         .expect(HttpStatus.OK);
@@ -115,7 +115,7 @@ describe('UserController', () => {
 
   describe('PUT /api/admin/forgotPassword', () => {
     it('should give success message if password is updated', async () => {
-      const updatePassword: any = await request
+      const updatePassword = await request
         .put('/admin/forgotPassword')
         .send({
           otp,
@@ -133,7 +133,7 @@ describe('UserController', () => {
     });
 
     it('should give error message if otp is expired', async () => {
-      const updatePassword: any = await request
+      const updatePassword = await request
         .put('/admin/forgotPassword')
         .send({
           otp,
@@ -149,7 +149,7 @@ describe('UserController', () => {
     });
 
     it('should give error message if otp not found.', async () => {
-      const findOtp: any = await request
+      const findOtp = await request
         .put('/admin/forgotPassword')
         .send({
           otp,
