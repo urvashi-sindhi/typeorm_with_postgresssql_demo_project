@@ -12,9 +12,17 @@ export enum InquiryStatus {
   RESOLVE = 'Resolve',
 }
 
+export enum ServiceType {
+  APPROACH = 'Approach',
+  CONSULTING = 'Consulting',
+  ATC = 'ATC',
+  BENEFITS = 'Benefits',
+}
+
 export enum ApiTag {
   ADMIN = 'Admin',
   INQUIRY = 'Inquiry',
+  Service = 'Service',
 }
 
 export enum ConstantValues {

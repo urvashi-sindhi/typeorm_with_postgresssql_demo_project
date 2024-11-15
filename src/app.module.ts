@@ -18,6 +18,11 @@ import { ProductMethodology } from './lib/entities/productMethodology.entity';
 import { ProductService } from './lib/entities/productService.entity';
 import { ProductServiceDetails } from './lib/entities/productServiceDetails.entity';
 import { ProductModule } from './product/product.module';
+import { Service } from './lib/entities/service.entity';
+import { ServiceDetails } from './lib/entities/serviceDetails.entity';
+import { SubService } from './lib/entities/subService.entity';
+import { ServiceImage } from './lib/entities/serviceImages.entity';
+import { ServiceModule } from './service/service.module';
 dotenv.config();
 
 const config: any = {
@@ -34,6 +39,10 @@ const config: any = {
     ProductMethodology,
     ProductService,
     ProductServiceDetails,
+    Service,
+    ServiceDetails,
+    SubService,
+    ServiceImage,
   ],
   define: {
     timestamps: false,
@@ -56,6 +65,7 @@ const config: any = {
     InquiryModule,
     UserModule,
     ProductModule,
+    ServiceModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtService],
