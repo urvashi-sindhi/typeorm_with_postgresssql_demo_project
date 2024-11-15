@@ -1,14 +1,14 @@
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Inquiry } from 'src/lib/entities/inquiry.entity';
-import { handleResponse } from 'src/lib/helpers/handleResponse';
-import { InquiryStatus, ResponseStatus } from 'src/lib/utils/enum';
-import { Messages } from 'src/lib/utils/messages';
+import { Inquiry } from '../lib/entities/inquiry.entity';
+import { handleResponse } from '../lib/helpers/handleResponse';
+import { InquiryStatus, ResponseStatus } from '../lib/utils/enum';
+import { Messages } from '../lib/utils/messages';
 import { Like, Repository } from 'typeorm';
-import { emailSend } from 'src/lib/helpers/mail';
+import { emailSend } from '../lib/helpers/mail';
 import { CreateInquiryDto } from './dto/createInquiry.dto';
-import { paginate } from 'src/lib/helpers/paginationService';
-import { pagination } from 'src/lib/helpers/commonPagination';
+import { paginate } from '../lib/helpers/paginationService';
+import { pagination } from '../lib/helpers/commonPagination';
 
 @Injectable()
 export class InquiryService {

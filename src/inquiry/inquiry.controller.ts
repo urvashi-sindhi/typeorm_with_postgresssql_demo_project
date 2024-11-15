@@ -12,9 +12,9 @@ import {
 } from '@nestjs/common';
 import { InquiryService } from './inquiry.service';
 import { ApiBearerAuth, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { ApiTag } from 'src/lib/utils/enum';
+import { ApiTag } from '../lib/utils/enum';
 import { CreateInquiryDto } from './dto/createInquiry.dto';
-import { JwtGuard } from 'src/lib/services/auth/guard/jwt.guard';
+import { JwtGuard } from '../lib/services/auth/guard/jwt.guard';
 
 @ApiTags(ApiTag.INQUIRY)
 @Controller('inquiry')
