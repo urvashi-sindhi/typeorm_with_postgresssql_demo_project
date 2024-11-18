@@ -110,6 +110,7 @@ describe('InquiryController', () => {
         .post('/inquiry/createInquiry')
         .send(inquiry.alreadyRegister)
         .expect(HttpStatus.OK);
+        
       expect(existingInquiry._body.statusCode).toEqual(HttpStatus.CONFLICT);
       expect(existingInquiry._body.status).toEqual(ResponseStatus.ERROR);
       expect(existingInquiry._body.message).toContain(Messages.ALREADY_EXIST);
