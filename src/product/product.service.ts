@@ -70,19 +70,20 @@ export class ProductServices {
         productImageDetail,
       } = dto;
 
-      const findProduct = await queryRunner.manager.findOne(Product, {
-        where: { product_name },
-      });
+      if (product_name) {
+        const findProduct = await queryRunner.manager.findOne(Product, {
+          where: { product_name },
+        });
 
-      if (findProduct) {
-        Logger.error(`Product ${Messages.ALREADY_EXIST}`);
-        return handleResponse(
-          HttpStatus.CONFLICT,
-          ResponseStatus.ERROR,
-          `Product ${Messages.ALREADY_EXIST}`,
-        );
+        if (findProduct) {
+          Logger.error(`Product ${Messages.ALREADY_EXIST}`);
+          return handleResponse(
+            HttpStatus.CONFLICT,
+            ResponseStatus.ERROR,
+            `Product ${Messages.ALREADY_EXIST}`,
+          );
+        }
       }
-
       const createProduct = await queryRunner.manager.save(Product, {
         product_name,
         description,
