@@ -22,7 +22,7 @@ export enum ConstantValues {
 }
 
 export enum Token {
-  ADMIN_TOKEN = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IkFkbWluIiwiZW1haWwiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE3MzE2NDcxMDUsImV4cCI6MTczMTczMzUwNX0.GzmFvRaL0mkhxq61gMqhaznDjMJlnB6zskfyzPq9KPU',
+  ADMIN_TOKEN = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IkFkbWluIiwiZW1haWwiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE3MzE5MDc0MjYsImV4cCI6MTczMTk5MzgyNn0.KcYJg6bSe9EhLnIr84EqOVJzu3TpuQdlcIN9mmennls',
 }
 
 export const PASSWORD_REGEX =
