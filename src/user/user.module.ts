@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
-import { Inquiry } from 'src/lib/entities/inquiry.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from 'src/lib/entities/user.entity';
+import { User } from '../lib/entities/user.entity';
 import { JwtModule } from '@nestjs/jwt';
-import { JwtStrategy } from 'src/lib/services/auth/strategy/jwt.strategy';
-import { Otp } from 'src/lib/entities/otp.entity';
+import { JwtStrategy } from '../lib/services/auth/strategy/jwt.strategy';
+import { Otp } from '../lib/entities/otp.entity';
 
 @Module({
   imports: [
