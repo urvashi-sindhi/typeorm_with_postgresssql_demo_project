@@ -13,7 +13,6 @@ import { AppModule } from '../app.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ProductController } from './product.controller';
 import * as supertest from 'supertest';
-import { DataSource } from 'typeorm';
 import { product } from './productVariable';
 import { ResponseStatus, Token } from '../lib/utils/enum';
 import { Messages } from '../lib/utils/messages';
@@ -62,6 +61,35 @@ describe('ProductController', () => {
   });
 
   describe('POST /api/product/addProduct', () => {
+    it('should give error message when the token is not added.', async () => {
+      const addProduct = await request
+        .post(`/product/addProduct`)
+        .expect(HttpStatus.UNAUTHORIZED);
+
+      expect(addProduct._body.statusCode).toEqual(HttpStatus.UNAUTHORIZED);
+      expect(addProduct._body.message).toContain('Unauthorized');
+    });
+
+    it('should give error message when provide wrong token.', async () => {
+      const addProduct = await request
+        .post(`/product/addProduct`)
+        .set('Authorization', Token.WRONG_TOKEN)
+        .expect(HttpStatus.UNAUTHORIZED);
+
+      expect(addProduct._body.statusCode).toEqual(HttpStatus.UNAUTHORIZED);
+      expect(addProduct._body.message).toContain('Unauthorized');
+    });
+
+    it('should give error message when provide expire token.', async () => {
+      const addProduct = await request
+        .post(`/product/addProduct`)
+        .set('Authorization', Token.EXPIRE_TOKEN)
+        .expect(HttpStatus.UNAUTHORIZED);
+
+      expect(addProduct._body.statusCode).toEqual(HttpStatus.UNAUTHORIZED);
+      expect(addProduct._body.message).toContain('Unauthorized');
+    });
+
     it('should be give validation error if pass empty payload ', async () => {
       const addProduct = await request
         .post('/product/addProduct')
@@ -103,43 +131,35 @@ describe('ProductController', () => {
       expect(addProduct._body.message).toContain(Messages.SERVER_ERROR);
     });
 
-    // it('should be give success message if create new product ', async () => {
-    //   const addProduct = await request
-    //     .post('/product/addProduct')
-    //     .set('Authorization', Token.ADMIN_TOKEN)
-    //     .send(product.productInfo)
-    //     .expect(HttpStatus.OK);
+    it('should return conflict error if inquiry already exists', async () => {
+      const existingProduct = await request
+        .post('/product/addProduct')
+        .set('Authorization', Token.ADMIN_TOKEN)
+        .send(product.alreadyExist)
+        .expect(HttpStatus.OK);
 
-    //   productId = addProduct._body.data.id;
+      expect(existingProduct._body.statusCode).toEqual(HttpStatus.CONFLICT);
+      expect(existingProduct._body.status).toEqual(ResponseStatus.ERROR);
+      expect(existingProduct._body.message).toContain(Messages.ALREADY_EXIST);
+    });
 
-    //   expect(addProduct._body.statusCode).toEqual(HttpStatus.CREATED);
-    //   expect(addProduct._body.status).toEqual(ResponseStatus.SUCCESS);
-    //   expect(addProduct._body.message).toContain(
-    //     `Product ${Messages.ADDED_SUCCESS}`,
-    //   );
-    // });
+    it('should be give success message if product created successfully', async () => {
+      const addProduct = await request
+        .post('/product/addProduct')
+        .set('Authorization', Token.ADMIN_TOKEN)
+        .send(product.productInfo)
+        .expect(HttpStatus.OK);
 
-    // it('should return conflict error if inquiry already exists', async () => {
-    //   const existingProduct = await request
-    //     .post('/product/addProduct')
-    //     .set('Authorization', Token.ADMIN_TOKEN)
-    //     .send(product.alreadyExist)
-    //     .expect(HttpStatus.OK);
+      console.log('addProduct', addProduct);
 
-    //   expect(existingProduct._body.statusCode).toEqual(HttpStatus.CONFLICT);
-    //   expect(existingProduct._body.status).toEqual(ResponseStatus.ERROR);
-    //   expect(existingProduct._body.message).toContain(Messages.ALREADY_EXIST);
-    // });
+      productId = addProduct._body.data.id;
 
-    // it('should give error message when the token is not added.', async () => {
-    //   const addProduct = await request
-    //     .post('/product/addProduct')
-    //     .send(product.productInfo)
-    //     .expect(HttpStatus.UNAUTHORIZED);
-
-    //   expect(addProduct._body.statusCode).toEqual(HttpStatus.UNAUTHORIZED);
-    //   expect(addProduct._body.message).toContain('Unauthorized');
-    // });
+      expect(addProduct._body.statusCode).toEqual(HttpStatus.CREATED);
+      expect(addProduct._body.status).toEqual(ResponseStatus.SUCCESS);
+      expect(addProduct._body.message).toContain(
+        `Product ${Messages.ADDED_SUCCESS}`,
+      );
+    });
   });
 
   // describe('PUT /api/product/editProduct/:productId', () => {

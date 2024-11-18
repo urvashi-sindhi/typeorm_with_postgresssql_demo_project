@@ -1,6 +1,6 @@
 export const product = {
   productInfo: {
-    product_name: 'Dynamic ',
+    product_name: 'Dynamic 102',
     description: 'please provide description',
     contact_us: 'please provide contact us details',
     productImageDetail: [
@@ -113,7 +113,7 @@ export const product = {
   },
 
   alreadyExist: {
-    product_name: 'Dynamic ',
+    product_name: 'Dynamic 123',
     description: 'please provide description',
     contact_us: 'please provide contact us details',
     productImageDetail: [
