@@ -5,7 +5,6 @@ import { Messages } from '../lib/utils/messages';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Inquiry } from '../lib/entities/inquiry.entity';
 import * as supertest from 'supertest';
-import { DataSource } from 'typeorm';
 import { InquiryController } from './inquiry.controller';
 import { InquiryService } from './inquiry.service';
 import { inquiry } from './inquiryVariable';
@@ -110,7 +109,7 @@ describe('InquiryController', () => {
         .post('/inquiry/createInquiry')
         .send(inquiry.alreadyRegister)
         .expect(HttpStatus.OK);
-        
+
       expect(existingInquiry._body.statusCode).toEqual(HttpStatus.CONFLICT);
       expect(existingInquiry._body.status).toEqual(ResponseStatus.ERROR);
       expect(existingInquiry._body.message).toContain(Messages.ALREADY_EXIST);
