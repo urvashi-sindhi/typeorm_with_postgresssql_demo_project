@@ -22,7 +22,6 @@ export class AllExceptionFilter implements ExceptionFilter {
         : HttpStatus.INTERNAL_SERVER_ERROR;
     httpStatus = exception['statusCode'] ? exception['statusCode'] : httpStatus;
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     exception['name'];
     let exMessage = exception['message'];
     let exResponse;
@@ -30,18 +29,15 @@ export class AllExceptionFilter implements ExceptionFilter {
       exResponse = exception.getResponse();
 
       if (exResponse?.trace && exResponse.trace.length > 0) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         exResponse.trace;
       }
       if (exResponse?.message && exResponse.message.length > 0) {
         exMessage = exResponse.message;
       }
       if (exResponse?.data) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         exResponse.data;
       }
     } else {
-      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       exception;
     }
 

@@ -7,14 +7,14 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { InquiryService } from './inquiry.service';
-import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
-import { ApiTag } from 'src/lib/utils/enum';
+import { ApiBearerAuth, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiTag } from '../lib/utils/enum';
 import { CreateInquiryDto } from './dto/createInquiry.dto';
-import { ListOfFilterDto } from './dto/listOfInquiries.dto';
-import { JwtGuard } from 'src/lib/services/auth/guard/jwt.guard';
+import { JwtGuard } from '../lib/services/auth/guard/jwt.guard';
 
 @ApiTags(ApiTag.INQUIRY)
 @Controller('inquiry')
@@ -45,11 +45,49 @@ export class InquiryController {
     return this.inquiryService.updateInquiryStatus(inquiryId);
   }
 
+  @ApiQuery({
+    name: 'sortKey',
+    type: String,
+    required: false,
+  })
+  @ApiQuery({
+    name: 'sortValue',
+    type: String,
+    enum: ['asc', 'desc'],
+    required: false,
+  })
+  @ApiQuery({
+    name: 'pageSize',
+    type: 'number',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'page',
+    type: 'number',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'searchBar',
+    type: 'string',
+    required: false,
+  })
   @UseGuards(JwtGuard)
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
-  @Post('/listOfInquiries')
-  listOfInquiries(@Body() dto: ListOfFilterDto) {
-    return this.inquiryService.listOfInquiries(dto);
+  @Get('/listOfInquiries')
+  listOfInquiries(
+    @Query('sortKey') sortKey: string,
+    @Query('sortValue') sortValue: string,
+    @Query('pageSize') pageSize: number,
+    @Query('page') page: number,
+    @Query('searchBar') searchBar: string,
+  ) {
+    return this.inquiryService.listOfInquiries({
+      sortValue,
+      sortKey,
+      pageSize,
+      page,
+      searchBar,
+    });
   }
 }

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Inquiry } from 'src/lib/entities/inquiry.entity';
+import { Inquiry } from '../lib/entities/inquiry.entity';
 import { InquiryController } from './inquiry.controller';
 import { InquiryService } from './inquiry.service';
 

@@ -1,14 +1,14 @@
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Inquiry } from 'src/lib/entities/inquiry.entity';
-import { handleResponse } from 'src/lib/helpers/handleResponse';
-import { InquiryStatus, ResponseStatus } from 'src/lib/utils/enum';
-import { Messages } from 'src/lib/utils/messages';
+import { Inquiry } from '../lib/entities/inquiry.entity';
+import { handleResponse } from '../lib/helpers/handleResponse';
+import { InquiryStatus, ResponseStatus } from '../lib/utils/enum';
+import { Messages } from '../lib/utils/messages';
 import { Like, Repository } from 'typeorm';
-import { emailSend } from 'src/lib/helpers/mail';
+import { emailSend } from '../lib/helpers/mail';
 import { CreateInquiryDto } from './dto/createInquiry.dto';
-import { paginate } from 'src/lib/helpers/paginationService';
-import { ListOfFilterDto } from './dto/listOfInquiries.dto';
+import { paginate } from '../lib/helpers/paginationService';
+import { pagination } from '../lib/helpers/commonPagination';
 
 @Injectable()
 export class InquiryService {
@@ -108,25 +108,28 @@ export class InquiryService {
     }
   }
 
-  async listOfInquiries(dto: ListOfFilterDto) {
-    const { sortKey, sortValue, searchBar } = dto;
-
+  async listOfInquiries(inquiryInfo: any) {
     let whereCondition = {};
 
-    if (searchBar) {
+    if (inquiryInfo.searchBar) {
       whereCondition = [
-        { first_name: Like(`%${searchBar}%`) },
-        { last_name: Like(`%${searchBar}%`) },
-        { email: Like(`%${searchBar}%`) },
-        { message: Like(`%${searchBar}%`) },
+        { first_name: Like(`%${inquiryInfo.searchBar}%`) },
+        { last_name: Like(`%${inquiryInfo.searchBar}%`) },
+        { email: Like(`%${inquiryInfo.searchBar}%`) },
+        { message: Like(`%${inquiryInfo.searchBar}%`) },
       ];
     }
 
-    const paginatedData = await paginate(dto, this.inquiryRepository);
+    const paginatedData = await paginate(inquiryInfo, this.inquiryRepository);
+
+    const sortQuery = await pagination(
+      inquiryInfo.sortKey,
+      inquiryInfo.sortValue,
+    );
 
     const listOfInquiries = await this.inquiryRepository.find({
       where: whereCondition,
-      order: { [sortKey || 'id']: [sortValue || 'ASC'] },
+      order: sortQuery,
       take: paginatedData.pageSize,
       skip: paginatedData.skip,
       select: [

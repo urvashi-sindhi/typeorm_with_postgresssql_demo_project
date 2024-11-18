@@ -1,19 +1,19 @@
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/lib/entities/user.entity';
+import { User } from '../lib/entities/user.entity';
 import { Repository } from 'typeorm';
 import { LoginDto } from './dto/login.dto';
-import { Messages } from 'src/lib/utils/messages';
-import { handleResponse } from 'src/lib/helpers/handleResponse';
-import { ConstantValues, ResponseStatus } from 'src/lib/utils/enum';
+import { Messages } from '../lib/utils/messages';
+import { handleResponse } from '../lib/helpers/handleResponse';
+import { ConstantValues, ResponseStatus } from '../lib/utils/enum';
 import * as bcrypt from 'bcrypt';
 import { ResetPasswordDto } from './dto/resetPassword.dto';
 import { VerifyEmailDto } from './dto/verifyEmail.dto';
 import * as moment from 'moment';
-import { Otp } from 'src/lib/entities/otp.entity';
+import { Otp } from '../lib/entities/otp.entity';
 import { ForgotPasswordDto } from './dto/forgotPassword.dto';
-import { emailSend } from 'src/lib/helpers/mail';
+import { emailSend } from '../lib/helpers/mail';
 
 @Injectable()
 export class UserService {
@@ -81,11 +81,11 @@ export class UserService {
     });
 
     if (!findUser) {
-      Logger.error(Messages.CREDENTIALS_NOT_MATCH);
+      Logger.error(`User ${Messages.NOT_FOUND}`);
       return handleResponse(
         HttpStatus.NOT_FOUND,
         ResponseStatus.ERROR,
-        Messages.CREDENTIALS_NOT_MATCH,
+        `User ${Messages.NOT_FOUND}`,
       );
     }
 
@@ -97,7 +97,7 @@ export class UserService {
     if (!validPassword) {
       Logger.error(Messages.CREDENTIALS_NOT_MATCH);
       return handleResponse(
-        HttpStatus.UNAUTHORIZED,
+        HttpStatus.BAD_REQUEST,
         ResponseStatus.ERROR,
         Messages.CREDENTIALS_NOT_MATCH,
       );
@@ -175,7 +175,7 @@ export class UserService {
     if (!findOtp) {
       Logger.error(Messages.OTP_VALIDATION);
       return handleResponse(
-        HttpStatus.NOT_FOUND,
+        HttpStatus.BAD_REQUEST,
         ResponseStatus.ERROR,
         Messages.OTP_VALIDATION,
       );
@@ -186,11 +186,11 @@ export class UserService {
     });
 
     if (!findEmail) {
-      Logger.error(`Email ${Messages.NOT_FOUND}`);
+      Logger.error(Messages.EMAIL_VALIDATION);
       return handleResponse(
         HttpStatus.NOT_FOUND,
         ResponseStatus.ERROR,
-        `Email ${Messages.NOT_FOUND}`,
+        Messages.EMAIL_VALIDATION,
       );
     }
 
