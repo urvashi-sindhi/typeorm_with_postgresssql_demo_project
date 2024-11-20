@@ -1,6 +1,6 @@
 export const product = {
   productInfo: {
-    product_name: 'Dynamic 1022',
+    product_name: 'Dynamic 7990',
     description: 'please provide description',
     contact_us: 'please provide contact us details',
     productImageDetail: [
@@ -115,7 +115,7 @@ export const product = {
   emptyPayload: {},
 
   alreadyExist: {
-    product_name: 'Dynamic 1020',
+    product_name: 'Dynamic 1022',
     description: 'please provide description',
     contact_us: 'please provide contact us details',
     productImageDetail: [
@@ -157,7 +157,7 @@ export const product = {
     sortKey: 'id',
     pageSize: 10,
     page: 1,
-    searchBar: 'dynamic',
+    searchBar: 'dynamic 365',
   },
 
   wrongPagination: {

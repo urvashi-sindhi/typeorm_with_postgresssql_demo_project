@@ -22,7 +22,9 @@ describe('ProductController', () => {
   let app: INestApplication;
   let module: TestingModule;
   let request: any;
-  let productId = 99;
+  let productId = null;
+  let stringId = 'abc';
+  let requiredId: number;
 
   beforeAll(async () => {
     module = await Test.createTestingModule({
@@ -60,296 +62,469 @@ describe('ProductController', () => {
     await app.close();
   });
 
-  // describe('POST /api/product/addProduct', () => {
-  //   it('should give error message when the token is not added.', async () => {
-  //     const addProduct = await request
-  //       .post(`/product/addProduct`)
-  //       .expect(HttpStatus.UNAUTHORIZED);
+  it('should give error message when the token is not added.', async () => {
+    console.log('post');
 
-  //     expect(addProduct._body.statusCode).toEqual(HttpStatus.UNAUTHORIZED);
-  //     expect(addProduct._body.message).toContain('Unauthorized');
-  //   });
+    const addProduct = await request
+      .post(`/product/addProduct`)
+      .expect(HttpStatus.UNAUTHORIZED);
 
-  //   it('should give error message when provide wrong token.', async () => {
-  //     const addProduct = await request
-  //       .post(`/product/addProduct`)
-  //       .set('Authorization', Token.WRONG_TOKEN)
-  //       .expect(HttpStatus.UNAUTHORIZED);
-
-  //     expect(addProduct._body.statusCode).toEqual(HttpStatus.UNAUTHORIZED);
-  //     expect(addProduct._body.message).toContain('Unauthorized');
-  //   });
-
-  //   it('should give error message when provide expire token.', async () => {
-  //     const addProduct = await request
-  //       .post(`/product/addProduct`)
-  //       .set('Authorization', Token.EXPIRE_TOKEN)
-  //       .expect(HttpStatus.UNAUTHORIZED);
-
-  //     expect(addProduct._body.statusCode).toEqual(HttpStatus.UNAUTHORIZED);
-  //     expect(addProduct._body.message).toContain('Unauthorized');
-  //   });
-
-  //   it('should be give validation error if pass empty payload ', async () => {
-  //     const addProduct = await request
-  //       .post('/product/addProduct')
-  //       .set('Authorization', Token.ADMIN_TOKEN)
-  //       .send(product.emptyPayload)
-  //       .expect(HttpStatus.OK);
-
-  //     expect(addProduct._body.statusCode).toEqual(
-  //       HttpStatus.INTERNAL_SERVER_ERROR,
-  //     );
-  //     expect(addProduct._body.status).toEqual(ResponseStatus.ERROR);
-  //     expect(addProduct._body.message).toContain(Messages.SERVER_ERROR);
-  //   });
-
-  //   it('should be give validation error if product_name is not valid type', async () => {
-  //     const addProduct = await request
-  //       .post('/product/addProduct')
-  //       .set('Authorization', Token.ADMIN_TOKEN)
-  //       .send(product.checkValidationType)
-  //       .expect(HttpStatus.BAD_REQUEST);
-
-  //     expect(addProduct._body.statusCode).toEqual(HttpStatus.BAD_REQUEST);
-  //     expect(addProduct._body.message).toEqual([
-  //       'product_name must be a string',
-  //     ]);
-  //   });
-
-  //   it('should be give required validation error if contact us is not provide', async () => {
-  //     const addProduct = await request
-  //       .post('/product/addProduct')
-  //       .set('Authorization', Token.ADMIN_TOKEN)
-  //       .send(product.requiredValidation)
-  //       .expect(HttpStatus.OK);
-
-  //     expect(addProduct._body.statusCode).toEqual(
-  //       HttpStatus.INTERNAL_SERVER_ERROR,
-  //     );
-  //     expect(addProduct._body.status).toEqual(ResponseStatus.ERROR);
-  //     expect(addProduct._body.message).toContain(Messages.SERVER_ERROR);
-  //   });
-
-  //   it('should return conflict error if inquiry already exists', async () => {
-  //     const existingProduct = await request
-  //       .post('/product/addProduct')
-  //       .set('Authorization', Token.ADMIN_TOKEN)
-  //       .send(product.alreadyExist)
-  //       .expect(HttpStatus.OK);
-
-  //     expect(existingProduct._body.statusCode).toEqual(HttpStatus.CONFLICT);
-  //     expect(existingProduct._body.status).toEqual(ResponseStatus.ERROR);
-  //     expect(existingProduct._body.message).toContain(Messages.ALREADY_EXIST);
-  //   });
-
-  //   // it('should be give success message if product created successfully', async () => {
-  //   //   const addProduct = await request
-  //   //     .post('/product/addProduct')
-  //   //     .set('Authorization', Token.ADMIN_TOKEN)
-  //   //     .send(product.productInfo)
-  //   //     .expect(HttpStatus.OK);
-
-  //   //   productId = addProduct._body.data.id;
-
-  //   //   expect(addProduct._body.statusCode).toEqual(HttpStatus.CREATED);
-  //   //   expect(addProduct._body.status).toEqual(ResponseStatus.SUCCESS);
-  //   //   expect(addProduct._body.message).toContain(
-  //   //     `Product ${Messages.ADDED_SUCCESS}`,
-  //   //   );
-  //   // });
-  // });
-
-  describe('PUT /api/product/editProduct/:productId', () => {
-    it('should give error message when the token is not added.', async () => {
-      const editProduct = await request
-        .put(`/product/editProduct/${productId}`)
-        .expect(HttpStatus.UNAUTHORIZED);
-
-      expect(editProduct._body.statusCode).toEqual(HttpStatus.UNAUTHORIZED);
-      expect(editProduct._body.message).toContain('Unauthorized');
-    });
-
-    it('should give error message when provide wrong token.', async () => {
-      const editProduct = await request
-        .put(`/product/editProduct/${productId}`)
-        .set('Authorization', Token.WRONG_TOKEN)
-        .expect(HttpStatus.UNAUTHORIZED);
-
-      expect(editProduct._body.statusCode).toEqual(HttpStatus.UNAUTHORIZED);
-      expect(editProduct._body.message).toContain('Unauthorized');
-    });
-
-    it('should give error message when provide expire token.', async () => {
-      const editProduct = await request
-        .put(`/product/editProduct/${productId}`)
-        .set('Authorization', Token.EXPIRE_TOKEN)
-        .expect(HttpStatus.UNAUTHORIZED);
-
-      expect(editProduct._body.statusCode).toEqual(HttpStatus.UNAUTHORIZED);
-      expect(editProduct._body.message).toContain('Unauthorized');
-    });
-
-    it('should be give validation error if product_name is not valid type', async () => {
-      const editProduct = await request
-        .put(`/product/editProduct/${productId}`)
-        .set('Authorization', Token.ADMIN_TOKEN)
-        .send(product.checkValidationType)
-        .expect(HttpStatus.BAD_REQUEST);
-
-      expect(editProduct._body.statusCode).toEqual(HttpStatus.BAD_REQUEST);
-      expect(editProduct._body.message).toEqual([
-        'product_name must be a string',
-      ]);
-    });
-
-    it('should give error if product not found.', async () => {
-      const findProduct = await request
-        .put(`/product/editProduct/${1}`)
-        .set('Authorization', Token.ADMIN_TOKEN)
-        .send(product.productInfo)
-        .expect(HttpStatus.OK);
-
-      expect(findProduct._body.statusCode).toEqual(HttpStatus.NOT_FOUND);
-      expect(findProduct._body.status).toEqual(ResponseStatus.ERROR);
-      expect(findProduct._body.message).toContain(
-        `Product ${Messages.NOT_FOUND}`,
-      );
-    });
-
-    it('should be give success message if update product ', async () => {
-      const editProduct = await request
-        .put(`/product/editProduct/${productId}`)
-        .set('Authorization', Token.ADMIN_TOKEN)
-        .send(product.productInfo)
-        .expect(HttpStatus.OK);
-
-      expect(editProduct._body.statusCode).toEqual(HttpStatus.ACCEPTED);
-      expect(editProduct._body.status).toEqual(ResponseStatus.SUCCESS);
-      expect(editProduct._body.message).toContain(
-        `Product ${Messages.UPDATE_SUCCESS}`,
-      );
-    });
+    expect(addProduct._body.statusCode).toEqual(HttpStatus.UNAUTHORIZED);
+    expect(addProduct._body.message).toContain('Unauthorized');
   });
 
-  describe('GET /api/customer/viewProduct/:productId', () => {
-    it('should be give success message if view product ', async () => {
-      const viewProduct = await request
-        .get(`/customer/viewProduct/${productId}`)
-        .expect(HttpStatus.OK);
+  it('should give error message when provide wrong token.', async () => {
+    console.log('post');
 
-      expect(viewProduct._body.statusCode).toEqual(HttpStatus.OK);
-      expect(viewProduct._body.status).toEqual(ResponseStatus.SUCCESS);
-    });
+    const addProduct = await request
+      .post(`/product/addProduct`)
+      .set('Authorization', Token.WRONG_TOKEN)
+      .expect(HttpStatus.UNAUTHORIZED);
 
-    it('should give error if product not found.', async () => {
-      const findProduct = await request
-        .get(`/customer/viewProduct/${1}`)
-        .expect(HttpStatus.OK);
-
-      expect(findProduct._body.statusCode).toEqual(HttpStatus.NOT_FOUND);
-      expect(findProduct._body.status).toEqual(ResponseStatus.ERROR);
-      expect(findProduct._body.message).toContain(
-        `Product ${Messages.NOT_FOUND}`,
-      );
-    });
+    expect(addProduct._body.statusCode).toEqual(HttpStatus.UNAUTHORIZED);
+    expect(addProduct._body.message).toContain('Unauthorized');
   });
 
-  // describe('DELETE /api/product/deleteProduct/:productId', () => {
-  //   it('should be give success message if delete product ', async () => {
-  //     const deleteProduct = await request
-  //       .delete(`/product/deleteProduct/${productId}`)
-  //       .set('Authorization', Token.ADMIN_TOKEN)
-  //       .expect(HttpStatus.OK);
+  it('should give error message when provide expire token.', async () => {
+    console.log('post');
 
-  //     expect(deleteProduct._body.statusCode).toEqual(HttpStatus.OK);
-  //     expect(deleteProduct._body.status).toEqual(ResponseStatus.SUCCESS);
-  //     expect(deleteProduct._body.message).toContain(
-  //       `Product ${Messages.DELETE_SUCCESS}`,
-  //     );
-  //   });
+    const addProduct = await request
+      .post(`/product/addProduct`)
+      .set('Authorization', Token.EXPIRE_TOKEN)
+      .expect(HttpStatus.UNAUTHORIZED);
 
-  //   it('should give error if product not found.', async () => {
-  //     const findProduct = await request
-  //       .delete(`/product/deleteProduct/${1}`)
-  //       .set('Authorization', Token.ADMIN_TOKEN)
-  //       .expect(HttpStatus.OK);
+    expect(addProduct._body.statusCode).toEqual(HttpStatus.UNAUTHORIZED);
+    expect(addProduct._body.message).toContain('Unauthorized');
+  });
 
-  //     expect(findProduct._body.statusCode).toEqual(HttpStatus.NOT_FOUND);
-  //     expect(findProduct._body.status).toEqual(ResponseStatus.ERROR);
-  //     expect(findProduct._body.message).toContain(
-  //       `Product ${Messages.NOT_FOUND}`,
-  //     );
-  //   });
+  it('should be give validation error if pass empty payload ', async () => {
+    console.log('post');
 
-  //   it('should give error message when the token is not added.', async () => {
-  //     const deleteProduct = await request
-  //       .delete(`/product/deleteProduct/${productId}`)
-  //       .expect(HttpStatus.UNAUTHORIZED);
+    const addProduct = await request
+      .post('/product/addProduct')
+      .set('Authorization', Token.ADMIN_TOKEN)
+      .send(product.emptyPayload)
+      .expect(HttpStatus.OK);
 
-  //     expect(deleteProduct._body.statusCode).toEqual(HttpStatus.UNAUTHORIZED);
-  //     expect(deleteProduct._body.message).toContain('Unauthorized');
-  //   });
-  // });
+    expect(addProduct._body.statusCode).toEqual(
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
+    expect(addProduct._body.status).toEqual(ResponseStatus.ERROR);
+    expect(addProduct._body.message).toContain(Messages.SERVER_ERROR);
+  });
 
-  // describe('GET /api/customer/getProductList', () => {
-  //   it('should be give success message when product getting.', async () => {
-  //     const productInfo = await request
-  //       .get('/customer/getProductList')
-  //       .expect(HttpStatus.OK);
+  it('should be give validation error if product_name is not valid type', async () => {
+    console.log('post');
 
-  //     expect(productInfo._body.statusCode).toEqual(HttpStatus.OK);
-  //     expect(productInfo._body.status).toEqual(ResponseStatus.SUCCESS);
-  //   });
+    const addProduct = await request
+      .post('/product/addProduct')
+      .set('Authorization', Token.ADMIN_TOKEN)
+      .send(product.checkValidationType)
+      .expect(HttpStatus.BAD_REQUEST);
 
-  //   it('should give error if product not found.', async () => {
-  //     const findProduct = await request
-  //       .get('/customer/getProductList')
-  //       .expect(HttpStatus.OK);
+    expect(addProduct._body.statusCode).toEqual(HttpStatus.BAD_REQUEST);
+    expect(addProduct._body.message).toEqual(['product_name must be a string']);
+  });
 
-  //     expect(findProduct._body.statusCode).toEqual(HttpStatus.NOT_FOUND);
-  //     expect(findProduct._body.status).toEqual(ResponseStatus.ERROR);
-  //     expect(findProduct._body.message).toContain(
-  //       `Product ${Messages.NOT_FOUND}`,
-  //     );
-  //   });
-  // });
+  it('should be give required validation error if contact us is not provide', async () => {
+    console.log('post');
 
-  // describe('GET /api/product/listOfProduct', () => {
-  //   it('should be give success message if list of product get successfully', async () => {
-  //     const listOfProduct: any = await request
-  //       .get(
-  //         `/product/listOfProduct?${product.pagination.sortKey}?${product.pagination.sortValue}?${product.pagination.pageSize}?${product.pagination.page}${product.pagination.searchBar}`,
-  //       )
-  //       .set('Authorization', Token.ADMIN_TOKEN)
-  //       .expect(HttpStatus.OK);
+    const addProduct = await request
+      .post('/product/addProduct')
+      .set('Authorization', Token.ADMIN_TOKEN)
+      .send(product.requiredValidation)
+      .expect(HttpStatus.OK);
 
-  //     expect(listOfProduct._body.statusCode).toEqual(HttpStatus.OK);
-  //     expect(listOfProduct._body.status).toEqual(ResponseStatus.SUCCESS);
-  //   });
+    expect(addProduct._body.statusCode).toEqual(
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
+    expect(addProduct._body.status).toEqual(ResponseStatus.ERROR);
+    expect(addProduct._body.message).toContain(Messages.SERVER_ERROR);
+  });
 
-  //   it('should be give error message if list of product not get', async () => {
-  //     const listOfProduct = await request
-  //       .get(
-  //         `/product/listOfProduct?${product.wrongPagination.sortKey}?${product.wrongPagination.sortValue}?${product.wrongPagination.pageSize}?${product.wrongPagination.page}?${product.wrongPagination.searchBar}`,
-  //       )
-  //       .set('Authorization', Token.ADMIN_TOKEN)
-  //       .expect(HttpStatus.OK);
+  it('should return conflict error if inquiry already exists', async () => {
+    console.log('post');
 
-  //     expect(listOfProduct._body.statusCode).toEqual(HttpStatus.NOT_FOUND);
-  //     expect(listOfProduct._body.status).toEqual(ResponseStatus.ERROR);
-  //     expect(listOfProduct._body.message).toContain(
-  //       `Product ${Messages.NOT_FOUND}`,
-  //     );
-  //   });
+    const existingProduct = await request
+      .post('/product/addProduct')
+      .set('Authorization', Token.ADMIN_TOKEN)
+      .send(product.alreadyExist)
+      .expect(HttpStatus.OK);
 
-  //   it('should give error message when the token is not added.', async () => {
-  //     const listOfProduct = await request
-  //       .get(`/product/listOfProduct`)
-  //       .expect(HttpStatus.UNAUTHORIZED);
+    expect(existingProduct._body.statusCode).toEqual(HttpStatus.CONFLICT);
+    expect(existingProduct._body.status).toEqual(ResponseStatus.ERROR);
+    expect(existingProduct._body.message).toContain(Messages.ALREADY_EXIST);
+  });
 
-  //     expect(listOfProduct._body.statusCode).toEqual(HttpStatus.UNAUTHORIZED);
-  //     expect(listOfProduct._body.message).toContain('Unauthorized');
-  //   });
-  // });
+  it('should be give success message if product created successfully', async () => {
+    console.log('post');
+
+    const addProduct = await request
+      .post('/product/addProduct')
+      .set('Authorization', Token.ADMIN_TOKEN)
+      .send(product.productInfo)
+      .expect(HttpStatus.OK);
+
+    expect(addProduct._body.statusCode).toEqual(HttpStatus.CREATED);
+    expect(addProduct._body.status).toEqual(ResponseStatus.SUCCESS);
+    expect(addProduct._body.message).toContain(
+      `Product ${Messages.ADDED_SUCCESS}`,
+    );
+    productId = addProduct._body.data.id;
+
+    console.log('add-====productId', productId);
+  });
+
+  it('should give error message when the token is not added.', async () => {
+    console.log('put');
+
+    const editProduct = await request
+      .put(`/product/editProduct/${productId}`)
+      .expect(HttpStatus.UNAUTHORIZED);
+    console.log('edit====productId', productId);
+
+    expect(editProduct._body.statusCode).toEqual(HttpStatus.UNAUTHORIZED);
+    expect(editProduct._body.message).toContain('Unauthorized');
+  });
+
+  it('should give error message when provide wrong token.', async () => {
+    console.log('put');
+
+    const editProduct = await request
+      .put(`/product/editProduct/${productId}`)
+      .set('Authorization', Token.WRONG_TOKEN)
+      .expect(HttpStatus.UNAUTHORIZED);
+
+    expect(editProduct._body.statusCode).toEqual(HttpStatus.UNAUTHORIZED);
+    expect(editProduct._body.message).toContain('Unauthorized');
+  });
+
+  it('should give error message when provide expire token.', async () => {
+    console.log('put');
+
+    const editProduct = await request
+      .put(`/product/editProduct/${productId}`)
+      .set('Authorization', Token.EXPIRE_TOKEN)
+      .expect(HttpStatus.UNAUTHORIZED);
+
+    expect(editProduct._body.statusCode).toEqual(HttpStatus.UNAUTHORIZED);
+    expect(editProduct._body.message).toContain('Unauthorized');
+  });
+
+  it('should be give validation error if product name is not valid type', async () => {
+    console.log('put');
+
+    const editProduct = await request
+      .put(`/product/editProduct/${productId}`)
+      .set('Authorization', Token.ADMIN_TOKEN)
+      .send(product.checkValidationType)
+      .expect(HttpStatus.BAD_REQUEST);
+
+    expect(editProduct._body.statusCode).toEqual(HttpStatus.BAD_REQUEST);
+    expect(editProduct._body.message).toEqual([
+      'product_name must be a string',
+    ]);
+  });
+
+  it('should give validation error message if productId is not a number.', async () => {
+    console.log('put');
+
+    const editProduct = await request
+      .put(`/product/editProduct/${stringId}`)
+      .set('Authorization', Token.ADMIN_TOKEN)
+      .send(product.productInfo)
+      .expect(HttpStatus.OK);
+
+    expect(editProduct._body.statusCode).toEqual(
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
+    expect(editProduct._body.message).toEqual('Internal server error');
+  });
+
+  it('should give validation error message if productId is not a provide.', async () => {
+    console.log('put');
+
+    const editProduct = await request
+      .put(`/product/editProduct/${requiredId}`)
+      .set('Authorization', Token.ADMIN_TOKEN)
+      .send(product.productInfo)
+      .expect(HttpStatus.OK);
+
+    expect(editProduct._body.statusCode).toEqual(
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
+    expect(editProduct._body.message).toEqual('Internal server error');
+  });
+
+  it('should give error if product not found.', async () => {
+    const findProduct = await request
+      .put(`/product/editProduct/${1}`)
+      .set('Authorization', Token.ADMIN_TOKEN)
+      .send(product.productInfo)
+      .expect(HttpStatus.OK);
+
+    expect(findProduct._body.statusCode).toEqual(HttpStatus.NOT_FOUND);
+    expect(findProduct._body.status).toEqual(ResponseStatus.ERROR);
+    expect(findProduct._body.message).toContain(
+      `Product ${Messages.NOT_FOUND}`,
+    );
+  });
+
+  it('should be give success message if update product ', async () => {
+    console.log('put');
+
+    const editProduct = await request
+      .put(`/product/editProduct/${productId}`)
+      .set('Authorization', Token.ADMIN_TOKEN)
+      .send(product.productInfo)
+      .expect(HttpStatus.OK);
+
+    expect(editProduct._body.statusCode).toEqual(HttpStatus.ACCEPTED);
+    expect(editProduct._body.status).toEqual(ResponseStatus.SUCCESS);
+    expect(editProduct._body.message).toContain(
+      `Product ${Messages.UPDATE_SUCCESS}`,
+    );
+  });
+
+  it('should give validation error message if inquiryId is not a number.', async () => {
+    console.log('get');
+
+    const viewProduct = await request
+      .get(`/customer/viewProduct/${stringId}`)
+      .expect(HttpStatus.INTERNAL_SERVER_ERROR);
+
+    console.log('productId', productId);
+    expect(viewProduct._body.statusCode).toEqual(
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
+    expect(viewProduct._body.message).toEqual('Internal server error');
+  });
+
+  it('should give validation error message if inquiryId is not a provide.', async () => {
+    console.log('get');
+
+    const viewProduct = await request
+      .get(`/customer/viewProduct/${requiredId}`)
+      .expect(HttpStatus.INTERNAL_SERVER_ERROR);
+
+    expect(viewProduct._body.statusCode).toEqual(
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
+    expect(viewProduct._body.message).toEqual('Internal server error');
+  });
+
+  it('should be give success message if view product ', async () => {
+    console.log('get');
+
+    const viewProduct = await request
+      .get(`/customer/viewProduct/${productId}`)
+      .expect(HttpStatus.OK);
+
+    expect(viewProduct._body.statusCode).toEqual(HttpStatus.OK);
+    expect(viewProduct._body.status).toEqual(ResponseStatus.SUCCESS);
+  });
+
+  it('should give error if product not found.', async () => {
+    console.log('get');
+
+    const findProduct = await request
+      .get(`/customer/viewProduct/${1}`)
+      .expect(HttpStatus.OK);
+
+    expect(findProduct._body.statusCode).toEqual(HttpStatus.NOT_FOUND);
+    expect(findProduct._body.status).toEqual(ResponseStatus.ERROR);
+    expect(findProduct._body.message).toContain(
+      `Product ${Messages.NOT_FOUND}`,
+    );
+  });
+
+  it('should give error if product not found.', async () => {
+    console.log('get');
+
+    const findProduct = await request
+      .get('/customer/getProductList')
+      .expect(HttpStatus.OK);
+
+    expect(findProduct._body.statusCode).toEqual(HttpStatus.NOT_FOUND);
+    expect(findProduct._body.status).toEqual(ResponseStatus.ERROR);
+    expect(findProduct._body.message).toContain(
+      `Product ${Messages.NOT_FOUND}`,
+    );
+  });
+
+  it('should be give success message when product get.', async () => {
+    console.log('get');
+
+    const productInfo = await request
+      .get('/customer/getProductList')
+      .expect(HttpStatus.OK);
+
+    expect(productInfo._body.statusCode).toEqual(HttpStatus.OK);
+    expect(productInfo._body.status).toEqual(ResponseStatus.SUCCESS);
+  });
+
+  it('should give error message when the token is not added.', async () => {
+    console.log('get');
+
+    const listOfProduct = await request
+      .get(
+        `/product/listOfProduct?${product.pagination.sortKey}?${product.pagination.sortValue}?${product.pagination.pageSize}?${product.pagination.page}${product.pagination.searchBar}`,
+      )
+      .expect(HttpStatus.UNAUTHORIZED);
+
+    expect(listOfProduct._body.statusCode).toEqual(HttpStatus.UNAUTHORIZED);
+    expect(listOfProduct._body.message).toContain('Unauthorized');
+  });
+
+  it('should give error message when provide wrong token.', async () => {
+    console.log('get');
+
+    const listOfProduct = await request
+      .get(
+        `/product/listOfProduct?${product.pagination.sortKey}?${product.pagination.sortValue}?${product.pagination.pageSize}?${product.pagination.page}${product.pagination.searchBar}`,
+      )
+      .set('Authorization', Token.WRONG_TOKEN)
+      .expect(HttpStatus.UNAUTHORIZED);
+
+    expect(listOfProduct._body.statusCode).toEqual(HttpStatus.UNAUTHORIZED);
+    expect(listOfProduct._body.message).toContain('Unauthorized');
+  });
+
+  it('should give error message when provide expire token.', async () => {
+    console.log('get');
+
+    const listOfProduct = await request
+      .get(
+        `/product/listOfProduct?${product.pagination.sortKey}?${product.pagination.sortValue}?${product.pagination.pageSize}?${product.pagination.page}${product.pagination.searchBar}`,
+      )
+      .set('Authorization', Token.EXPIRE_TOKEN)
+      .expect(HttpStatus.UNAUTHORIZED);
+
+    expect(listOfProduct._body.statusCode).toEqual(HttpStatus.UNAUTHORIZED);
+    expect(listOfProduct._body.message).toContain('Unauthorized');
+  });
+
+  it('should be give success message if list of product get successfully', async () => {
+    console.log('get');
+
+    const listOfProduct: any = await request
+      .get(
+        `/product/listOfProduct?${product.pagination.sortKey}?${product.pagination.sortValue}?${product.pagination.pageSize}?${product.pagination.page}${product.pagination.searchBar}`,
+      )
+      .set('Authorization', Token.ADMIN_TOKEN)
+      .expect(HttpStatus.OK);
+
+    expect(listOfProduct._body.statusCode).toEqual(HttpStatus.OK);
+    expect(listOfProduct._body.status).toEqual(ResponseStatus.SUCCESS);
+  });
+
+  it('should be give error message if list of product not get', async () => {
+    console.log('get');
+
+    const listOfProduct = await request
+      .get(
+        `/product/listOfProduct?searchBar=${product.wrongPagination.searchBar}`,
+      )
+      .set('Authorization', Token.ADMIN_TOKEN)
+      .expect(HttpStatus.OK);
+
+    expect(listOfProduct._body.statusCode).toEqual(HttpStatus.NOT_FOUND);
+    expect(listOfProduct._body.status).toEqual(ResponseStatus.ERROR);
+    expect(listOfProduct._body.message).toContain(
+      `Product ${Messages.NOT_FOUND}`,
+    );
+  });
+
+  it('should give error message when the token is not added.', async () => {
+    console.log('delete');
+
+    const deleteProduct = await request
+      .delete(`/product/deleteProduct/${productId}`)
+      .expect(HttpStatus.UNAUTHORIZED);
+
+    console.log('delete=======productId', productId);
+
+    expect(deleteProduct._body.statusCode).toEqual(HttpStatus.UNAUTHORIZED);
+    expect(deleteProduct._body.message).toContain('Unauthorized');
+  });
+
+  it('should give error message when provide wrong token.', async () => {
+    console.log('delete');
+
+    const deleteProduct = await request
+      .delete(`/product/deleteProduct/${productId}`)
+      .set('Authorization', Token.WRONG_TOKEN)
+      .expect(HttpStatus.UNAUTHORIZED);
+
+    expect(deleteProduct._body.statusCode).toEqual(HttpStatus.UNAUTHORIZED);
+    expect(deleteProduct._body.message).toContain('Unauthorized');
+  });
+
+  it('should give error message when provide expire token.', async () => {
+    console.log('delete');
+
+    const deleteProduct = await request
+      .delete(`/product/deleteProduct/${productId}`)
+      .set('Authorization', Token.EXPIRE_TOKEN)
+      .expect(HttpStatus.UNAUTHORIZED);
+
+    expect(deleteProduct._body.statusCode).toEqual(HttpStatus.UNAUTHORIZED);
+    expect(deleteProduct._body.message).toContain('Unauthorized');
+  });
+
+  it('should give validation error message if productId is not a number.', async () => {
+    console.log('delete');
+
+    const deleteProduct = await request
+      .delete(`/product/deleteProduct/'123'`)
+      .set('Authorization', Token.ADMIN_TOKEN)
+      .expect(HttpStatus.OK);
+
+    expect(deleteProduct._body.statusCode).toEqual(
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
+    expect(deleteProduct._body.message).toEqual('Internal server error');
+  });
+
+  it('should give validation error message if productId is not a provide.', async () => {
+    const deleteProduct = await request
+      .delete(`/product/deleteProduct/${requiredId}`)
+      .set('Authorization', Token.ADMIN_TOKEN)
+      .expect(HttpStatus.OK);
+
+    expect(deleteProduct._body.statusCode).toEqual(
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
+    expect(deleteProduct._body.message).toEqual('Internal server error');
+  });
+
+  it('should give error if product not found.', async () => {
+    console.log('delete');
+
+    const findProduct = await request
+      .delete(`/product/deleteProduct/${1}`)
+      .set('Authorization', Token.ADMIN_TOKEN)
+      .expect(HttpStatus.OK);
+
+    expect(findProduct._body.statusCode).toEqual(HttpStatus.NOT_FOUND);
+    expect(findProduct._body.status).toEqual(ResponseStatus.ERROR);
+    expect(findProduct._body.message).toContain(
+      `Product ${Messages.NOT_FOUND}`,
+    );
+  });
+
+  it('should be give success message if delete product ', async () => {
+    console.log('delete');
+
+    const deleteProduct = await request
+      .delete(`/product/deleteProduct/${productId}`)
+      .set('Authorization', Token.ADMIN_TOKEN)
+      .expect(HttpStatus.OK);
+
+    expect(deleteProduct._body.statusCode).toEqual(HttpStatus.OK);
+    expect(deleteProduct._body.status).toEqual(ResponseStatus.SUCCESS);
+    expect(deleteProduct._body.message).toContain(
+      `Product ${Messages.DELETE_SUCCESS}`,
+    );
+  });
 });
