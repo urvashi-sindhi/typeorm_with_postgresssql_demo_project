@@ -32,7 +32,7 @@ export class InquiryController {
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
   @Get('/viewInquiry/:inquiryId')
-  viewInquiry(@Query('inquiryId') inquiryId: number) {
+  viewInquiry(@Param('inquiryId') inquiryId: number) {
     return this.inquiryService.viewInquiry(inquiryId);
   }
 
