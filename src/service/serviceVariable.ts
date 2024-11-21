@@ -1,6 +1,6 @@
 export const service = {
   serviceInfo: {
-    service_name: 'Software Development2',
+    service_name: 'Software Development9011',
     service_description: 'Innovate, Build, and Grow.',
     serviceImageDetail: [
       {
