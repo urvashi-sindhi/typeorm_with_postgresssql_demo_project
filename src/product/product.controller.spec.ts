@@ -167,7 +167,7 @@ describe('ProductController', () => {
         .expect(HttpStatus.BAD_REQUEST);
 
       expect(res.status).to.equal(HttpStatus.BAD_REQUEST);
-      expect(res.body.message).to.equal(['product_name must be a string']);
+      expect(res.body.message).to.deep.equal(['product_name must be a string']);
     });
 
     it('should be give required validation error if contact us is not provide', async () => {
@@ -264,7 +264,7 @@ describe('ProductController', () => {
         .expect(HttpStatus.BAD_REQUEST);
 
       expect(res.body.statusCode).to.equal(HttpStatus.BAD_REQUEST);
-      expect(res.body.message).to.equal(['product_name must be a string']);
+      expect(res.body.message).to.deep.equal(['product_name must be a string']);
     });
 
     it('should give error if product not found.', async () => {
