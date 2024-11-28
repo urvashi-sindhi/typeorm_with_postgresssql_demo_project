@@ -10,12 +10,42 @@ import { JwtService } from '@nestjs/jwt';
 import { Otp } from './lib/entities/otp.entity';
 import { InquiryModule } from './inquiry/inquiry.module';
 import { UserModule } from './user/user.module';
+import { Product } from './lib/entities/product.entity';
+import { ProductImage } from './lib/entities/productImage.entity';
+import { ProductBenefit } from './lib/entities/productBenefit.entity';
+import { ProductExpertise } from './lib/entities/productExpertise.entity';
+import { ProductMethodology } from './lib/entities/productMethodology.entity';
+import { ProductService } from './lib/entities/productService.entity';
+import { ProductServiceDetails } from './lib/entities/productServiceDetails.entity';
+import { ProductModule } from './product/product.module';
+import { Service } from './lib/entities/service.entity';
+import { ServiceDetails } from './lib/entities/serviceDetails.entity';
+import { SubService } from './lib/entities/subService.entity';
+import { ServiceImage } from './lib/entities/serviceImages.entity';
+import { ServiceModule } from './service/service.module';
+import { GoogleStrategy } from './lib/services/auth/strategy/google.strategy';
+import { PassportModule } from '@nestjs/passport';
 dotenv.config();
 
 const config: any = {
   type: 'postgres',
   autoLoadEntities: true,
-  entities: [User, Inquiry, Otp],
+  entities: [
+    User,
+    Inquiry,
+    Otp,
+    Product,
+    ProductImage,
+    ProductBenefit,
+    ProductExpertise,
+    ProductMethodology,
+    ProductService,
+    ProductServiceDetails,
+    Service,
+    ServiceDetails,
+    SubService,
+    ServiceImage,
+  ],
   define: {
     timestamps: false,
   },
@@ -23,6 +53,7 @@ const config: any = {
 
 @Module({
   imports: [
+    PassportModule.register({ defaultStrategy: 'google' }),
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot({
       ...config,
@@ -36,8 +67,10 @@ const config: any = {
     }),
     InquiryModule,
     UserModule,
+    ProductModule,
+    ServiceModule,
   ],
   controllers: [AppController],
-  providers: [AppService, JwtService],
+  providers: [AppService, JwtService, GoogleStrategy],
 })
 export class AppModule {}

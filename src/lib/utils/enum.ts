@@ -12,9 +12,17 @@ export enum InquiryStatus {
   RESOLVE = 'Resolve',
 }
 
+export enum ServiceType {
+  APPROACH = 'Approach',
+  CONSULTING = 'Consulting',
+  ATC = 'ATC',
+  BENEFITS = 'Benefits',
+}
+
 export enum ApiTag {
   ADMIN = 'Admin',
   INQUIRY = 'Inquiry',
+  Service = 'Service',
 }
 
 export enum ConstantValues {
@@ -22,7 +30,7 @@ export enum ConstantValues {
 }
 
 export enum Token {
-  ADMIN_TOKEN = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IkFkbWluIiwiZW1haWwiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE3MzE2NjI0MzQsImV4cCI6MTczMTc0ODgzNH0.TUt156wrYxHDQwwbURdNT0hyD39V0LJ47QGxfbVPGAk',
+  ADMIN_TOKEN = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IkFkbWluIiwiZW1haWwiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE3MzIxODc5ODIsImV4cCI6MTczMjI3NDM4Mn0.2zfJ5ECra3N9gzRb5pXKR85Tv6BM0yUp30pMbVQtdMs',
   WRONG_TOKEN = 'Bearer eyhtJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IkFkbWluIiwiZW1haWwiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE3MzE2NjI0MzQsImV4cCI6MTczMTc0ODgzNH0.TUt156wrYxHDQwwbURdNT0hyD39V0LJ47QGxfbVPGAk',
   EXPIRE_TOKEN = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IkFkbWluIiwiZW1haWwiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE3Mjk4NDA3MDQsImV4cCI6MTcyOTkyNzEwNH0.dwVrl5WHaIZqD0aewS-LcESDCet6UCYPtxBSqb_UNoM',
 }
