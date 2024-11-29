@@ -133,7 +133,6 @@ describe('InquiryController', () => {
         `Inquiry ${Messages.ADDED_SUCCESS}`,
       );
       inquiryId = createInquiry.body.data.id;
-      console.log('inquiryId', inquiryId);
     });
   });
 
