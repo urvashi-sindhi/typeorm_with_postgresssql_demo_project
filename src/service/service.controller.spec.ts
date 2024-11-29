@@ -80,8 +80,6 @@ describe('ServiceController', () => {
 
   describe('POST api/service/addService', () => {
     it('should give error message when the token is not added.', async () => {
-      console.log('post');
-
       const addService = await request(server)
         .post(`/service/addService`)
         .expect(HttpStatus.UNAUTHORIZED);
@@ -91,8 +89,6 @@ describe('ServiceController', () => {
     });
 
     it('should give error message when provide wrong token.', async () => {
-      console.log('post');
-
       const addService = await request(server)
         .post(`/service/addService`)
         .set('Authorization', Token.WRONG_TOKEN)
@@ -103,8 +99,6 @@ describe('ServiceController', () => {
     });
 
     it('should give error message when provide expire token.', async () => {
-      console.log('post');
-
       const addService = await request(server)
         .post(`/service/addService`)
         .set('Authorization', Token.EXPIRE_TOKEN)
@@ -115,8 +109,6 @@ describe('ServiceController', () => {
     });
 
     it('should be give validation error if pass empty payload ', async () => {
-      console.log('post');
-
       const addService = await request(server)
         .post(`/service/addService`)
         .set('Authorization', Token.ADMIN_TOKEN)
@@ -131,8 +123,6 @@ describe('ServiceController', () => {
     });
 
     it('should be give validation error if service_name is not valid type', async () => {
-      console.log('post');
-
       const addService = await request(server)
         .post(`/service/addService`)
         .set('Authorization', Token.ADMIN_TOKEN)
@@ -146,8 +136,6 @@ describe('ServiceController', () => {
     });
 
     it('should be give required validation error if sub service title is not provide', async () => {
-      console.log('post');
-
       const addService = await request(server)
         .post(`/service/addService`)
         .set('Authorization', Token.ADMIN_TOKEN)
@@ -162,8 +150,6 @@ describe('ServiceController', () => {
     });
 
     it('should return conflict error if service already exists', async () => {
-      console.log('post');
-
       const existingService = await request(server)
         .post(`/service/addService`)
         .set('Authorization', Token.ADMIN_TOKEN)
@@ -178,8 +164,6 @@ describe('ServiceController', () => {
     });
 
     it('should be give success message if service created successfully', async () => {
-      console.log('post');
-
       jest.setTimeout(10000);
 
       const addService = await request(server)
@@ -194,27 +178,20 @@ describe('ServiceController', () => {
         `Service ${Messages.ADDED_SUCCESS}`,
       );
       serviceId = addService.body.data.id;
-
-      console.log('add-====serviceId', serviceId);
     });
   });
 
   describe('PUT api/service/editService/:serviceId', () => {
     it('should give error message when the token is not added.', async () => {
-      console.log('put');
-
       const editService = await request(server)
         .put(`/service/editService/${serviceId}`)
         .expect(HttpStatus.UNAUTHORIZED);
-      console.log('edit====serviceId', serviceId);
 
       expect(editService.body.statusCode).to.equal(HttpStatus.UNAUTHORIZED);
       expect(editService.body.message).to.include('Unauthorized');
     });
 
     it('should give error message when provide wrong token.', async () => {
-      console.log('put');
-
       const editService = await request(server)
         .put(`/service/editService/${serviceId}`)
         .set('Authorization', Token.WRONG_TOKEN)
@@ -225,8 +202,6 @@ describe('ServiceController', () => {
     });
 
     it('should give error message when provide expire token.', async () => {
-      console.log('put');
-
       const editService = await request(server)
         .put(`/service/editService/${serviceId}`)
         .set('Authorization', Token.EXPIRE_TOKEN)
@@ -237,8 +212,6 @@ describe('ServiceController', () => {
     });
 
     it('should be give validation error if service name is not valid type', async () => {
-      console.log('put');
-
       const editService = await request(server)
         .put(`/service/editService/${serviceId}`)
         .set('Authorization', Token.ADMIN_TOKEN)
@@ -252,8 +225,6 @@ describe('ServiceController', () => {
     });
 
     it('should give validation error message if serviceId is not a number.', async () => {
-      console.log('put');
-
       const editService = await request(server)
         .put(`/service/editService/${stringId}`)
         .set('Authorization', Token.ADMIN_TOKEN)
@@ -267,8 +238,6 @@ describe('ServiceController', () => {
     });
 
     it('should give validation error message if serviceId is not a provide.', async () => {
-      console.log('put');
-
       const editService = await request(server)
         .put(`/service/editService/${requiredId}`)
         .set('Authorization', Token.ADMIN_TOKEN)
@@ -296,8 +265,6 @@ describe('ServiceController', () => {
     });
 
     it('should be give success message if update product ', async () => {
-      console.log('put');
-
       jest.setTimeout(10000);
 
       const editService = await request(server)
@@ -316,15 +283,12 @@ describe('ServiceController', () => {
 
   describe('GET api/customer/viewService/:serviceId', () => {
     it('should give validation error message if serviceId is not a number.', async () => {
-      console.log('get');
-
       jest.setTimeout(10000);
 
       const viewProduct = await request(server)
         .get(`/customer/viewService/${stringId}`)
         .expect(HttpStatus.INTERNAL_SERVER_ERROR);
 
-      console.log('productId', serviceId);
       expect(viewProduct.body.statusCode).to.equal(
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
@@ -332,8 +296,6 @@ describe('ServiceController', () => {
     });
 
     it('should give validation error message if serviceId is not a provide.', async () => {
-      console.log('get');
-
       jest.setTimeout(10000);
 
       const viewProduct = await request(server)
@@ -347,8 +309,6 @@ describe('ServiceController', () => {
     });
 
     it('should give error if service not found.', async () => {
-      console.log('get');
-
       jest.setTimeout(10000);
 
       const findProduct = await request(server)
@@ -363,8 +323,6 @@ describe('ServiceController', () => {
     });
 
     it('should be give success message if view Service ', async () => {
-      console.log('get');
-
       jest.setTimeout(10000);
 
       const viewProduct = await request(server)
@@ -378,8 +336,6 @@ describe('ServiceController', () => {
 
   describe('GET api/customer/getServiceList', () => {
     it('should give error if service not found.', async () => {
-      console.log('get');
-
       const findProduct = await request(server)
         .get('/customer/getServiceList')
         .expect(HttpStatus.OK);
@@ -392,8 +348,6 @@ describe('ServiceController', () => {
     });
 
     it('should be give success message when service get successfully.', async () => {
-      console.log('get');
-
       const productInfo = await request(server)
         .get('/customer/getServiceList')
         .expect(HttpStatus.OK);
@@ -405,8 +359,6 @@ describe('ServiceController', () => {
 
   describe('GET api/service/listOfService', () => {
     it('should give error message when the token is not added.', async () => {
-      console.log('get');
-
       const listOfProduct = await request(server)
         .get(
           `/service/listOfService?sortKey=${service.pagination.sortKey}?sortValue=${service.pagination.sortValue}?pageSize=${service.pagination.pageSize}?page=${service.pagination.page}?searchBar=${service.pagination.searchBar}`,
@@ -418,8 +370,6 @@ describe('ServiceController', () => {
     });
 
     it('should give error message when provide wrong token.', async () => {
-      console.log('get');
-
       const listOfProduct = await request(server)
         .get(
           `/service/listOfService?sortKey=${service.pagination.sortKey}?sortValue=${service.pagination.sortValue}?pageSize=${service.pagination.pageSize}?page=${service.pagination.page}?searchBar=${service.pagination.searchBar}`,
@@ -432,8 +382,6 @@ describe('ServiceController', () => {
     });
 
     it('should give error message when provide expire token.', async () => {
-      console.log('get');
-
       const listOfProduct = await request(server)
         .get(
           `/service/listOfService?sortKey=${service.pagination.sortKey}?sortValue=${service.pagination.sortValue}?pageSize=${service.pagination.pageSize}?page=${service.pagination.page}?searchBar=${service.pagination.searchBar}`,
@@ -446,8 +394,6 @@ describe('ServiceController', () => {
     });
 
     it('should be give error message if list of product not get', async () => {
-      console.log('get');
-
       const listOfProduct = await request(server)
         .get(
           `/service/listOfService?searchBar=${service.wrongPagination.searchBar}`,
@@ -463,8 +409,6 @@ describe('ServiceController', () => {
     });
 
     it('should be give success message if list of Service get successfully', async () => {
-      console.log('get');
-
       const listOfProduct = await request(server)
         .get(
           `/service/listOfService?${service.pagination.sortKey}?${service.pagination.sortValue}?${service.pagination.pageSize}?${service.pagination.page}?${service.pagination.searchBar}`,
@@ -479,21 +423,15 @@ describe('ServiceController', () => {
 
   describe('DELETE api/service/deleteService/:serviceId', () => {
     it('should give error message when the token is not added.', async () => {
-      console.log('delete');
-
       const deleteProduct = await request(server)
         .delete(`/service/deleteService/${serviceId}`)
         .expect(HttpStatus.UNAUTHORIZED);
-
-      console.log('delete=======serviceId', serviceId);
 
       expect(deleteProduct.body.statusCode).to.equal(HttpStatus.UNAUTHORIZED);
       expect(deleteProduct.body.message).to.include('Unauthorized');
     });
 
     it('should give error message when provide wrong token.', async () => {
-      console.log('delete');
-
       const deleteProduct = await request(server)
         .delete(`/service/deleteService/${serviceId}`)
         .set('Authorization', Token.WRONG_TOKEN)
@@ -504,8 +442,6 @@ describe('ServiceController', () => {
     });
 
     it('should give error message when provide expire token.', async () => {
-      console.log('delete');
-
       const deleteProduct = await request(server)
         .delete(`/service/deleteService/${serviceId}`)
         .set('Authorization', Token.EXPIRE_TOKEN)
@@ -516,8 +452,6 @@ describe('ServiceController', () => {
     });
 
     it('should give validation error message if serviceId is not a number.', async () => {
-      console.log('delete');
-
       const deleteProduct = await request(server)
         .delete(`/service/deleteService/${stringId}`)
         .set('Authorization', Token.ADMIN_TOKEN)
@@ -542,8 +476,6 @@ describe('ServiceController', () => {
     });
 
     it('should give error if service not found.', async () => {
-      console.log('delete');
-
       const findProduct = await request(server)
         .delete(`/service/deleteService/${1}`)
         .set('Authorization', Token.ADMIN_TOKEN)
@@ -557,8 +489,6 @@ describe('ServiceController', () => {
     });
 
     it('should be give success message if delete service successfully.', async () => {
-      console.log('delete');
-
       const deleteProduct = await request(server)
         .delete(`/service/deleteService/${serviceId}`)
         .set('Authorization', Token.ADMIN_TOKEN)
