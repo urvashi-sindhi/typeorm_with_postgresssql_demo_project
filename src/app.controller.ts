@@ -4,13 +4,13 @@ import {
   HttpCode,
   HttpStatus,
   Req,
-  Res,
   UseGuards,
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import { GoogleOAuthGuard } from './lib/services/auth/guard/google-oauth.guard';
 import { ResponseStatus } from './lib/utils/enum';
 import { handleResponse } from './lib/helpers/handleResponse';
+import { TwitterOAuthGuard } from './lib/services/auth/guard/twitter-oauth.guard';
 
 @Controller()
 export class AppController {
@@ -38,5 +38,24 @@ export class AppController {
   @UseGuards(GoogleOAuthGuard)
   googleAuthRedirect(@Req() req: any) {
     return this.appService.googleLogin(req);
+  }
+
+  @Get('auth/twitter')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(TwitterOAuthGuard)
+  twitterLogin(@Req() req: any) {
+    return handleResponse(
+      HttpStatus.OK,
+      ResponseStatus.SUCCESS,
+      undefined,
+      'http://localhost:5000/api/auth/twitter/callback',
+    );
+  }
+
+  @Get('auth/twitter/callback')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(TwitterOAuthGuard)
+  twitterCallback(@Req() req) {
+    return this.appService.twitterLogin(req);
   }
 }

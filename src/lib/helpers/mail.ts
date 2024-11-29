@@ -30,6 +30,10 @@ export const emailSend = async (obj: any) => {
     firstName,
     lastName,
     picture,
+    id,
+    username,
+    displayName,
+    photo,
   } = obj;
   let mailOptions: any;
 
@@ -68,6 +72,21 @@ export const emailSend = async (obj: any) => {
             Last Name: ${lastName}
             Email: ${email}
             Picture: ${picture}`,
+    };
+  }
+
+  if (id && username && displayName) {
+    mailOptions = {
+      from: process.env.EMAIL,
+      to: email,
+      subject: Messages.GOOGLE_SIGN_IN,
+      text: `${Messages.GOOGLE_SIGN_IN_TEXT} 
+
+            Id: ${id}
+            Username: ${username}
+            DisplayName: ${displayName}
+            Email: ${email}
+            photo: ${photo}`,
     };
   }
 
