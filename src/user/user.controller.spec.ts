@@ -9,17 +9,19 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../lib/entities/user.entity';
 import { Otp } from '../lib/entities/otp.entity';
 import { JwtStrategy } from '../lib/services/auth/strategy/jwt.strategy';
-import * as supertest from 'supertest';
-import { DataSource } from 'typeorm';
 import { user } from './userVariable';
 import { UserModule } from './user.module';
 import { AppModule } from '../app.module';
+import * as request from 'supertest';
+import * as chai from 'chai';
+
+const expect = chai.expect;
 
 describe('UserController', () => {
   let app: INestApplication;
   let module: TestingModule;
-  let request: any;
   let otp: number;
+  let server: any;
 
   beforeAll(async () => {
     module = await Test.createTestingModule({
@@ -39,8 +41,7 @@ describe('UserController', () => {
     app = module.createNestApplication();
     app.useGlobalPipes(new ValidationPipe());
     await app.init();
-
-    request = supertest(app.getHttpServer());
+    server = app.getHttpServer();
   });
 
   afterAll(async () => {
@@ -49,13 +50,13 @@ describe('UserController', () => {
 
   describe('POST /api/admin/login', () => {
     it('should be give validation error if pass empty payload ', async () => {
-      const login = await request
+      const login = await request(server)
         .post('/admin/login')
         .send({})
         .expect(HttpStatus.BAD_REQUEST);
 
-      expect(login._body.statusCode).toEqual(HttpStatus.BAD_REQUEST);
-      expect(login._body.message).toEqual([
+      expect(login.body.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+      expect(login.body.message).to.deep.equal([
         'email should not be empty',
         'email must be a string',
         'email must be an email',
@@ -65,83 +66,85 @@ describe('UserController', () => {
     });
 
     it('should be give validation error if password is not valid type', async () => {
-      const createInquiry = await request
+      const createInquiry = await request(server)
         .post('/admin/login')
         .send(user.checkValidationType)
         .expect(HttpStatus.BAD_REQUEST);
 
-      expect(createInquiry._body.statusCode).toEqual(HttpStatus.BAD_REQUEST);
-      expect(createInquiry._body.message).toEqual([
+      expect(createInquiry.body.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+      expect(createInquiry.body.message).to.deep.equal([
         'password must be a string',
       ]);
     });
 
     it('should be give validation error if email is not valid format', async () => {
-      const createInquiry = await request
+      const createInquiry = await request(server)
         .post('/admin/login')
         .send(user.checkEmailValidationFormat)
         .expect(HttpStatus.BAD_REQUEST);
 
-      expect(createInquiry._body.statusCode).toEqual(HttpStatus.BAD_REQUEST);
-      expect(createInquiry._body.message).toEqual(['email must be an email']);
+      expect(createInquiry.body.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+      expect(createInquiry.body.message).to.deep.equal([
+        'email must be an email',
+      ]);
     });
 
     it('should be give required validation error if password is not provide', async () => {
-      const createInquiry = await request
+      const createInquiry = await request(server)
         .post('/admin/login')
         .send(user.requiredValidation)
         .expect(HttpStatus.BAD_REQUEST);
 
-      expect(createInquiry._body.statusCode).toEqual(HttpStatus.BAD_REQUEST);
-      expect(createInquiry._body.message).toEqual([
+      expect(createInquiry.body.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+      expect(createInquiry.body.message).to.deep.equal([
         'password should not be empty',
         'password must be a string',
       ]);
     });
 
     it('should be give error message credential does not match ', async () => {
-      const login = await request
+      const login = await request(server)
         .post('/admin/login')
         .send(user.incorrectCredential)
         .expect(HttpStatus.OK);
 
-      expect(login._body.statusCode).toEqual(HttpStatus.BAD_REQUEST);
-      expect(login._body.status).toEqual(ResponseStatus.ERROR);
-      expect(login._body.message).toContain(Messages.CREDENTIALS_NOT_MATCH);
+      expect(login.body.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+      expect(login.body.status).to.equal(ResponseStatus.ERROR);
+      expect(login.body.message).to.include(Messages.CREDENTIALS_NOT_MATCH);
     });
 
     it('should be give error message credential does not match when email is incorrect ', async () => {
-      const login = await request
+      const login = await request(server)
         .post('/admin/login')
         .send(user.incorrectEmail)
         .expect(HttpStatus.OK);
 
-      expect(login._body.statusCode).toEqual(HttpStatus.NOT_FOUND);
-      expect(login._body.status).toEqual(ResponseStatus.ERROR);
-      expect(login._body.message).toContain(Messages.CREDENTIALS_NOT_MATCH);
+      expect(login.body.statusCode).to.equal(HttpStatus.NOT_FOUND);
+      expect(login.body.status).to.equal(ResponseStatus.ERROR);
+      expect(login.body.message).to.include(Messages.CREDENTIALS_NOT_MATCH);
     });
 
     it('should be give success message login successfully', async () => {
-      const login = await request
+      const login = await request(server)
         .post('/admin/login')
         .send(user.login)
         .expect(HttpStatus.OK);
 
-      expect(login._body.statusCode).toEqual(HttpStatus.OK);
-      expect(login._body.status).toEqual(ResponseStatus.SUCCESS);
-      expect(login._body.message).toContain(Messages.LOGIN_SUCCESS);
+      expect(login.body.statusCode).to.equal(HttpStatus.OK);
+      expect(login.body.status).to.equal(ResponseStatus.SUCCESS);
+      expect(login.body.message).to.include(Messages.LOGIN_SUCCESS);
     });
   });
 
   describe('POST /api/admin/verifyEmail', () => {
     it('should be give validation error if pass empty payload ', async () => {
-      const login = await request
+      const login = await request(server)
         .post('/admin/verifyEmail')
         .send({})
         .expect(HttpStatus.BAD_REQUEST);
 
-      expect(login._body.statusCode).toEqual(HttpStatus.BAD_REQUEST);
-      expect(login._body.message).toEqual([
+      expect(login.body.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+      expect(login.body.message).to.deep.equal([
         'email should not be empty',
         'email must be a string',
         'email must be an email',
@@ -149,62 +152,64 @@ describe('UserController', () => {
     });
 
     it('should be give validation error if email is not valid type', async () => {
-      const createInquiry = await request
+      const createInquiry = await request(server)
         .post('/admin/verifyEmail')
         .send(user.checkValidationTypeForVerifyEmail)
         .expect(HttpStatus.BAD_REQUEST);
 
-      expect(createInquiry._body.statusCode).toEqual(HttpStatus.BAD_REQUEST);
-      expect(createInquiry._body.message).toEqual([
+      expect(createInquiry.body.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+      expect(createInquiry.body.message).to.deep.equal([
         'email must be a string',
         'email must be an email',
       ]);
     });
 
     it('should be give validation error if email is not valid format', async () => {
-      const createInquiry = await request
+      const createInquiry = await request(server)
         .post('/admin/verifyEmail')
         .send(user.checkEmailValidationFormat)
         .expect(HttpStatus.BAD_REQUEST);
 
-      expect(createInquiry._body.statusCode).toEqual(HttpStatus.BAD_REQUEST);
-      expect(createInquiry._body.message).toEqual(['email must be an email']);
+      expect(createInquiry.body.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+      expect(createInquiry.body.message).to.deep.equal([
+        'email must be an email',
+      ]);
     });
 
     it('should give error message you are not register when email is incorrect ', async () => {
-      const verifyEmail = await request
+      const verifyEmail = await request(server)
         .post('/admin/verifyEmail')
         .send(user.incorrectEmail)
         .expect(HttpStatus.OK);
 
-      expect(verifyEmail._body.statusCode).toEqual(HttpStatus.NOT_FOUND);
-      expect(verifyEmail._body.status).toEqual(ResponseStatus.ERROR);
-      expect(verifyEmail._body.message).toContain(Messages.EMAIL_VALIDATION);
+      expect(verifyEmail.body.statusCode).to.equal(HttpStatus.NOT_FOUND);
+      expect(verifyEmail.body.status).to.equal(ResponseStatus.ERROR);
+      expect(verifyEmail.body.message).to.include(Messages.EMAIL_VALIDATION);
     });
 
     it('should give success message your email is verify', async () => {
-      const verifyEmail = await request
+      const verifyEmail = await request(server)
         .post('/admin/verifyEmail')
         .send(user.verifyEmail)
         .expect(HttpStatus.OK);
 
-      otp = verifyEmail._body.data;
+      otp = verifyEmail.body.data;
 
-      expect(verifyEmail._body.statusCode).toEqual(HttpStatus.OK);
-      expect(verifyEmail._body.status).toEqual(ResponseStatus.SUCCESS);
-      expect(verifyEmail._body.message).toContain(Messages.OTP_SENT);
+      expect(verifyEmail.body.statusCode).to.equal(HttpStatus.OK);
+      expect(verifyEmail.body.status).to.equal(ResponseStatus.SUCCESS);
+      expect(verifyEmail.body.message).to.include(Messages.OTP_SENT);
     });
   });
 
   describe('PUT /api/admin/forgotPassword', () => {
     it('should be give validation error if pass empty payload ', async () => {
-      const login = await request
+      const login = await request(server)
         .put('/admin/forgotPassword')
         .send({})
         .expect(HttpStatus.BAD_REQUEST);
 
-      expect(login._body.statusCode).toEqual(HttpStatus.BAD_REQUEST);
-      expect(login._body.message).toEqual([
+      expect(login.body.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+      expect(login.body.message).to.deep.equal([
         'email should not be empty',
         'email must be a string',
         'email must be an email',
@@ -222,13 +227,13 @@ describe('UserController', () => {
     });
 
     it('should be give validation error if password is not valid type', async () => {
-      const createInquiry = await request
+      const createInquiry = await request(server)
         .put('/admin/forgotPassword')
         .send(user.checkValidationTypeForForgotPassword)
         .expect(HttpStatus.BAD_REQUEST);
 
-      expect(createInquiry._body.statusCode).toEqual(HttpStatus.BAD_REQUEST);
-      expect(createInquiry._body.message).toEqual([
+      expect(createInquiry.body.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+      expect(createInquiry.body.message).to.deep.equal([
         'newPassword must be a string',
         'newPassword must be longer than or equal to 8 characters',
         'newPassword must match /^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\\W_]).{8,}$/ regular expression',
@@ -237,23 +242,25 @@ describe('UserController', () => {
     });
 
     it('should be give validation error if email is not valid format', async () => {
-      const createInquiry = await request
+      const createInquiry = await request(server)
         .put('/admin/forgotPassword')
         .send(user.checkEmailValidationFormatForForgotPassword)
         .expect(HttpStatus.BAD_REQUEST);
 
-      expect(createInquiry._body.statusCode).toEqual(HttpStatus.BAD_REQUEST);
-      expect(createInquiry._body.message).toEqual(['email must be an email']);
+      expect(createInquiry.body.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+      expect(createInquiry.body.message).to.deep.equal([
+        'email must be an email',
+      ]);
     });
 
     it('should be give required validation error if new password is not provide', async () => {
-      const createInquiry = await request
+      const createInquiry = await request(server)
         .put('/admin/forgotPassword')
         .send(user.requiredValidationForForgotPassword)
         .expect(HttpStatus.BAD_REQUEST);
 
-      expect(createInquiry._body.statusCode).toEqual(HttpStatus.BAD_REQUEST);
-      expect(createInquiry._body.message).toEqual([
+      expect(createInquiry.body.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+      expect(createInquiry.body.message).to.deep.equal([
         'newPassword should not be empty',
         'newPassword must be a string',
         'newPassword must be longer than or equal to 8 characters',
@@ -263,29 +270,29 @@ describe('UserController', () => {
     });
 
     it('should give error message if otp is expired', async () => {
-      const updatePassword = await request
+      const updatePassword = await request(server)
         .put('/admin/forgotPassword')
         .send(user.otpExpired)
         .expect(HttpStatus.OK);
 
-      expect(updatePassword._body.statusCode).toEqual(HttpStatus.BAD_REQUEST);
-      expect(updatePassword._body.status).toEqual(ResponseStatus.ERROR);
-      expect(updatePassword._body.message).toContain(Messages.OTP_EXPIRED);
+      expect(updatePassword.body.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+      expect(updatePassword.body.status).to.equal(ResponseStatus.ERROR);
+      expect(updatePassword.body.message).to.include(Messages.OTP_EXPIRED);
     });
 
     it('should give error message if otp not found.', async () => {
-      const findOtp = await request
+      const findOtp = await request(server)
         .put('/admin/forgotPassword')
         .send(user.findOtp)
         .expect(HttpStatus.OK);
 
-      expect(findOtp._body.statusCode).toEqual(HttpStatus.BAD_REQUEST);
-      expect(findOtp._body.status).toEqual(ResponseStatus.ERROR);
-      expect(findOtp._body.message).toContain(Messages.OTP_VALIDATION);
+      expect(findOtp.body.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+      expect(findOtp.body.status).to.equal(ResponseStatus.ERROR);
+      expect(findOtp.body.message).to.include(Messages.OTP_VALIDATION);
     });
 
     it('should give success message if password is updated', async () => {
-      const updatePassword = await request
+      const updatePassword = await request(server)
         .put('/admin/forgotPassword')
         .send({
           otp,
@@ -295,9 +302,9 @@ describe('UserController', () => {
         })
         .expect(HttpStatus.OK);
 
-      expect(updatePassword._body.statusCode).toEqual(HttpStatus.ACCEPTED);
-      expect(updatePassword._body.status).toEqual(ResponseStatus.SUCCESS);
-      expect(updatePassword._body.message).toContain(
+      expect(updatePassword.body.statusCode).to.equal(HttpStatus.ACCEPTED);
+      expect(updatePassword.body.status).to.equal(ResponseStatus.SUCCESS);
+      expect(updatePassword.body.message).to.include(
         `Password ${Messages.UPDATE_SUCCESS}`,
       );
     });
@@ -305,43 +312,43 @@ describe('UserController', () => {
 
   describe('PUT /api/admin/resetPassword', () => {
     it('should give error message when the token is not added.', async () => {
-      const resetPassword = await request
+      const resetPassword = await request(server)
         .put(`/admin/resetPassword`)
         .expect(HttpStatus.UNAUTHORIZED);
 
-      expect(resetPassword._body.statusCode).toEqual(HttpStatus.UNAUTHORIZED);
-      expect(resetPassword._body.message).toContain('Unauthorized');
+      expect(resetPassword.body.statusCode).to.equal(HttpStatus.UNAUTHORIZED);
+      expect(resetPassword.body.message).to.include('Unauthorized');
     });
 
     it('should give error message when provide wrong token.', async () => {
-      const resetPassword = await request
+      const resetPassword = await request(server)
         .put(`/admin/resetPassword`)
         .set('Authorization', Token.WRONG_TOKEN)
         .expect(HttpStatus.UNAUTHORIZED);
 
-      expect(resetPassword._body.statusCode).toEqual(HttpStatus.UNAUTHORIZED);
-      expect(resetPassword._body.message).toContain('Unauthorized');
+      expect(resetPassword.body.statusCode).to.equal(HttpStatus.UNAUTHORIZED);
+      expect(resetPassword.body.message).to.include('Unauthorized');
     });
 
     it('should give error message when provide expire token.', async () => {
-      const resetPassword = await request
+      const resetPassword = await request(server)
         .put(`/admin/resetPassword`)
         .set('Authorization', Token.EXPIRE_TOKEN)
         .expect(HttpStatus.UNAUTHORIZED);
 
-      expect(resetPassword._body.statusCode).toEqual(HttpStatus.UNAUTHORIZED);
-      expect(resetPassword._body.message).toContain('Unauthorized');
+      expect(resetPassword.body.statusCode).to.equal(HttpStatus.UNAUTHORIZED);
+      expect(resetPassword.body.message).to.include('Unauthorized');
     });
 
     it('should be give validation error if pass empty payload ', async () => {
-      const resetPassword = await request
+      const resetPassword = await request(server)
         .put('/admin/resetPassword')
         .set('Authorization', Token.ADMIN_TOKEN)
         .send({})
         .expect(HttpStatus.BAD_REQUEST);
 
-      expect(resetPassword._body.statusCode).toEqual(HttpStatus.BAD_REQUEST);
-      expect(resetPassword._body.message).toEqual([
+      expect(resetPassword.body.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+      expect(resetPassword.body.message).to.deep.equal([
         'oldPassword should not be empty',
         'oldPassword must be a string',
         'newPassword should not be empty',
@@ -353,14 +360,14 @@ describe('UserController', () => {
     });
 
     it('should be give validation error if password is not valid type', async () => {
-      const resetPassword = await request
+      const resetPassword = await request(server)
         .put('/admin/resetPassword')
         .set('Authorization', Token.ADMIN_TOKEN)
         .send(user.checkValidationTypeForResetPassword)
         .expect(HttpStatus.BAD_REQUEST);
 
-      expect(resetPassword._body.statusCode).toEqual(HttpStatus.BAD_REQUEST);
-      expect(resetPassword._body.message).toEqual([
+      expect(resetPassword.body.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+      expect(resetPassword.body.message).to.deep.equal([
         'newPassword must be a string',
         'newPassword must match /^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\\W_]).{8,}$/ regular expression',
         'Password and confirm password should be same.',
@@ -368,14 +375,14 @@ describe('UserController', () => {
     });
 
     it('should be give required validation error if new password is not provide', async () => {
-      const resetPassword = await request
+      const resetPassword = await request(server)
         .put('/admin/resetPassword')
         .set('Authorization', Token.ADMIN_TOKEN)
         .send(user.requiredValidationForResetPassword)
         .expect(HttpStatus.BAD_REQUEST);
 
-      expect(resetPassword._body.statusCode).toEqual(HttpStatus.BAD_REQUEST);
-      expect(resetPassword._body.message).toEqual([
+      expect(resetPassword.body.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+      expect(resetPassword.body.message).to.deep.equal([
         'newPassword should not be empty',
         'newPassword must be a string',
         'newPassword must match /^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\\W_]).{8,}$/ regular expression',
@@ -384,42 +391,42 @@ describe('UserController', () => {
     });
 
     it('should give error message when the old Password is Wrong.', async () => {
-      const resetPassword = await request
+      const resetPassword = await request(server)
         .put('/admin/resetPassword')
         .set('Authorization', Token.ADMIN_TOKEN)
         .send(user.oldPasswordValidation)
         .expect(HttpStatus.OK);
 
-      expect(resetPassword._body.statusCode).toEqual(HttpStatus.BAD_REQUEST);
-      expect(resetPassword._body.status).toEqual(ResponseStatus.ERROR);
-      expect(resetPassword._body.message).toContain(
+      expect(resetPassword.body.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+      expect(resetPassword.body.status).to.equal(ResponseStatus.ERROR);
+      expect(resetPassword.body.message).to.include(
         Messages.CREDENTIALS_NOT_MATCH,
       );
     });
 
     it('should give error message when the new Password and confirm password is not same.', async () => {
-      const resetPassword = await request
+      const resetPassword = await request(server)
         .put('/admin/resetPassword')
         .set('Authorization', Token.ADMIN_TOKEN)
         .send(user.passwordValidation)
         .expect(HttpStatus.BAD_REQUEST);
 
-      expect(resetPassword._body.statusCode).toEqual(HttpStatus.BAD_REQUEST);
-      expect(resetPassword._body.message).toContain(
+      expect(resetPassword.body.statusCode).to.equal(HttpStatus.BAD_REQUEST);
+      expect(resetPassword.body.message).to.include(
         Messages.PASSWORD_CREDENTIALS,
       );
     });
 
     it('should give success message when the old password is updated.', async () => {
-      const resetPassword = await request
+      const resetPassword = await request(server)
         .put('/admin/resetPassword')
         .set('Authorization', Token.ADMIN_TOKEN)
         .send(user.resetPassword)
         .expect(HttpStatus.OK);
 
-      expect(resetPassword._body.statusCode).toEqual(HttpStatus.OK);
-      expect(resetPassword._body.status).toEqual(ResponseStatus.SUCCESS);
-      expect(resetPassword._body.message).toContain(
+      expect(resetPassword.body.statusCode).to.equal(HttpStatus.OK);
+      expect(resetPassword.body.status).to.equal(ResponseStatus.SUCCESS);
+      expect(resetPassword.body.message).to.include(
         `Password is ${Messages.UPDATE_SUCCESS}`,
       );
     });

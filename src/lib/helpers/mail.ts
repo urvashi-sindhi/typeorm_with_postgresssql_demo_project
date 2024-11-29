@@ -20,7 +20,21 @@ const transporter: any = nodemailer.createTransport({
 });
 
 export const emailSend = async (obj: any) => {
-  const { first_name, last_name, email, phone_number, message, otp } = obj;
+  const {
+    first_name,
+    last_name,
+    email,
+    phone_number,
+    message,
+    otp,
+    firstName,
+    lastName,
+    picture,
+    id,
+    username,
+    displayName,
+    photo,
+  } = obj;
   let mailOptions: any;
 
   if (email && first_name) {
@@ -44,6 +58,35 @@ export const emailSend = async (obj: any) => {
       to: email,
       subject: Messages.OTP_SUBJECT,
       text: `${Messages.OTP_SUBJECT} is ${otp}`,
+    };
+  }
+
+  if (email && picture) {
+    mailOptions = {
+      from: process.env.EMAIL,
+      to: email,
+      subject: Messages.GOOGLE_SIGN_IN,
+      text: `${Messages.GOOGLE_SIGN_IN_TEXT} 
+
+            First Name: ${firstName}
+            Last Name: ${lastName}
+            Email: ${email}
+            Picture: ${picture}`,
+    };
+  }
+
+  if (id && username && displayName) {
+    mailOptions = {
+      from: process.env.EMAIL,
+      to: email,
+      subject: Messages.GOOGLE_SIGN_IN,
+      text: `${Messages.GOOGLE_SIGN_IN_TEXT} 
+
+            Id: ${id}
+            Username: ${username}
+            DisplayName: ${displayName}
+            Email: ${email}
+            photo: ${photo}`,
     };
   }
 
