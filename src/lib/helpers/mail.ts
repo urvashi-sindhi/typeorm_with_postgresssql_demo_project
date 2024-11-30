@@ -34,6 +34,7 @@ export const emailSend = async (obj: any) => {
     username,
     displayName,
     photo,
+    accessToken,
   } = obj;
   let mailOptions: any;
 
@@ -66,7 +67,7 @@ export const emailSend = async (obj: any) => {
       from: process.env.EMAIL,
       to: email,
       subject: Messages.GOOGLE_SIGN_IN,
-      text: `${Messages.GOOGLE_SIGN_IN_TEXT} 
+      text: `${Messages.EMAIL_TEXT} 
 
             First Name: ${firstName}
             Last Name: ${lastName}
@@ -75,12 +76,25 @@ export const emailSend = async (obj: any) => {
     };
   }
 
+  if (email && accessToken) {
+    mailOptions = {
+      from: process.env.EMAIL,
+      to: email,
+      subject: Messages.FACEBOOK_SIGN_IN,
+      text: `${Messages.EMAIL_TEXT} 
+
+            First Name: ${firstName}
+            Last Name: ${lastName}
+            Email: ${email}`,
+    };
+  }
+
   if (id && username && displayName) {
     mailOptions = {
       from: process.env.EMAIL,
       to: email,
-      subject: Messages.GOOGLE_SIGN_IN,
-      text: `${Messages.GOOGLE_SIGN_IN_TEXT} 
+      subject: Messages.TWITTER_SIGN_IN,
+      text: `${Messages.EMAIL_TEXT} 
 
             Id: ${id}
             Username: ${username}

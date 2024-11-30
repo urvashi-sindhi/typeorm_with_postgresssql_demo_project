@@ -11,6 +11,7 @@ import { GoogleOAuthGuard } from './lib/services/auth/guard/google-oauth.guard';
 import { ResponseStatus } from './lib/utils/enum';
 import { handleResponse } from './lib/helpers/handleResponse';
 import { TwitterOAuthGuard } from './lib/services/auth/guard/twitter-oauth.guard';
+import { FacebookOAuthGuard } from './lib/services/auth/guard/facebook-oauth.guard';
 
 @Controller()
 export class AppController {
@@ -57,5 +58,24 @@ export class AppController {
   @UseGuards(TwitterOAuthGuard)
   twitterCallback(@Req() req) {
     return this.appService.twitterLogin(req);
+  }
+
+  @Get('auth/facebook')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(FacebookOAuthGuard)
+  facebookLogin(@Req() req: any) {
+    return handleResponse(
+      HttpStatus.OK,
+      ResponseStatus.SUCCESS,
+      undefined,
+      'http://localhost:5000/api/auth/facebook/callback',
+    );
+  }
+
+  @Get('auth/facebook/callback')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(FacebookOAuthGuard)
+  facebookCallback(@Req() req) {
+    return this.appService.facebookLogin(req);
   }
 }
