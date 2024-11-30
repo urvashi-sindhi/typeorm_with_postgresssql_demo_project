@@ -18,5 +18,6 @@ export enum Messages {
   SERVER_ERROR = 'Internal server error',
   DELETE_SUCCESS = 'data deleted successfully.',
   GOOGLE_SIGN_IN = 'You are sign in with google successfully.',
-  GOOGLE_SIGN_IN_TEXT = 'Your details are:',
+  EMAIL_TEXT = 'Your details are:',
+  TWITTER_SIGN_IN = 'You are sign in with twitter successfully.',
 }
