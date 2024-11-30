@@ -209,7 +209,9 @@ describe('ProductController', () => {
 
   describe('PUT /api/product/editProduct/:productId', () => {
     it('should return unauthorized if no token is provided', async () => {
-      const res = await request(server).put(`/product/editProduct/${productId}`);
+      const res = await request(server).put(
+        `/product/editProduct/${productId}`,
+      );
       expect(res.status).to.equal(HttpStatus.UNAUTHORIZED);
       expect(res.body.message).to.include('Unauthorized');
     });
@@ -297,7 +299,6 @@ describe('ProductController', () => {
         .get(`/customer/viewProduct/${stringId}`)
         .expect(HttpStatus.INTERNAL_SERVER_ERROR);
 
-      console.log('productId', productId);
       expect(res.body.statusCode).to.equal(HttpStatus.INTERNAL_SERVER_ERROR);
       expect(res.body.message).to.equal('Internal server error');
     });
@@ -322,7 +323,9 @@ describe('ProductController', () => {
     });
 
     it('should return the product successfully', async () => {
-      const res = await request(server).get(`/customer/viewProduct/${productId}`);
+      const res = await request(server).get(
+        `/customer/viewProduct/${productId}`,
+      );
       expect(res.status).to.equal(HttpStatus.OK);
       expect(res.body.status).to.equal(ResponseStatus.SUCCESS);
     });
@@ -340,8 +343,6 @@ describe('ProductController', () => {
     });
 
     it('should be give success message when product getting .', async () => {
-      console.log('get');
-
       const res: any = await request(server)
         .get('/customer/getProductList')
         .expect(HttpStatus.OK);
@@ -353,8 +354,6 @@ describe('ProductController', () => {
 
   describe('GET api/product/listOfProduct', () => {
     it('should give error message when the token is not added.', async () => {
-      console.log('get');
-
       const res: any = await request(server)
         .get(
           `/product/listOfProduct?${product.pagination.sortKey}?${product.pagination.sortValue}?${product.pagination.pageSize}?${product.pagination.page}${product.pagination.searchBar}`,
@@ -366,8 +365,6 @@ describe('ProductController', () => {
     });
 
     it('should give error message when provide wrong token.', async () => {
-      console.log('get');
-
       const res: any = await request(server)
         .get(
           `/product/listOfProduct?${product.pagination.sortKey}?${product.pagination.sortValue}?${product.pagination.pageSize}?${product.pagination.page}${product.pagination.searchBar}`,
@@ -380,8 +377,6 @@ describe('ProductController', () => {
     });
 
     it('should give error message when provide expire token.', async () => {
-      console.log('get');
-
       const res: any = await request(server)
         .get(
           `/product/listOfProduct?${product.pagination.sortKey}?${product.pagination.sortValue}?${product.pagination.pageSize}?${product.pagination.page}${product.pagination.searchBar}`,
@@ -394,8 +389,6 @@ describe('ProductController', () => {
     });
 
     it('should be give error message if list of product not get', async () => {
-      console.log('get');
-
       const res: any = await request(server)
         .get(
           `/product/listOfProduct?searchBar=${product.wrongPagination.searchBar}`,
@@ -409,8 +402,6 @@ describe('ProductController', () => {
     });
 
     it('should be give success message if list of product get successfully', async () => {
-      console.log('get');
-
       const res: any = await request(server)
         .get(
           `/product/listOfProduct?${product.pagination.sortKey}?${product.pagination.sortValue}?${product.pagination.pageSize}?${product.pagination.page}${product.pagination.searchBar}`,
@@ -425,21 +416,15 @@ describe('ProductController', () => {
 
   describe('DELETE /api/product/deleteProduct/:productId', () => {
     it('should give error message when the token is not added.', async () => {
-      console.log('delete');
-
       const res: any = await request(server)
         .delete(`/product/deleteProduct/${1}`)
         .expect(HttpStatus.UNAUTHORIZED);
-
-      console.log('delete=======productId', productId);
 
       expect(res.body.statusCode).to.equal(HttpStatus.UNAUTHORIZED);
       expect(res.body.message).to.include('Unauthorized');
     });
 
     it('should give error message when provide wrong token.', async () => {
-      console.log('delete');
-
       const res: any = await request(server)
         .delete(`/product/deleteProduct/${1}`)
         .set('Authorization', Token.WRONG_TOKEN)
@@ -450,9 +435,7 @@ describe('ProductController', () => {
     });
 
     it('should give error message when provide expire token.', async () => {
-      console.log('delete');
-
-      const res:any = await request(server)
+      const res: any = await request(server)
         .delete(`/product/deleteProduct/${1}`)
         .set('Authorization', Token.EXPIRE_TOKEN)
         .expect(HttpStatus.UNAUTHORIZED);
@@ -462,9 +445,7 @@ describe('ProductController', () => {
     });
 
     it('should give validation error message if productId is not a number.', async () => {
-      console.log('delete');
-
-      const res : any= await request(server)
+      const res: any = await request(server)
         .delete(`/product/deleteProduct/'123'`)
         .set('Authorization', Token.ADMIN_TOKEN)
         .expect(HttpStatus.OK);
@@ -484,8 +465,6 @@ describe('ProductController', () => {
     });
 
     it('should give error if product not found.', async () => {
-      console.log('delete');
-
       const res: any = await request(server)
         .delete(`/product/deleteProduct/${1}`)
         .set('Authorization', Token.ADMIN_TOKEN)
