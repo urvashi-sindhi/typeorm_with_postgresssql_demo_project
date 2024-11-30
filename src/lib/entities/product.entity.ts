@@ -20,7 +20,7 @@ export class Product {
   @Column({ length: 50, nullable: false })
   product_name: string;
 
-  @Column({ default: null, length: 255 })
+  @Column({ length: 255, default: null })
   description: string;
 
   @Column({ length: 255, nullable: false })
