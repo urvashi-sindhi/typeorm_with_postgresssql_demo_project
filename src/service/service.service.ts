@@ -1,5 +1,5 @@
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
-import { DataSource } from 'typeorm';
+import { DataSource, Like, Repository } from 'typeorm';
 import { ServiceDto } from './dto/service.dto';
 import { Service } from 'src/lib/entities/service.entity';
 import { Messages } from 'src/lib/utils/messages';
@@ -8,10 +8,17 @@ import { ResponseStatus, ServiceType } from 'src/lib/utils/enum';
 import { ServiceImage } from 'src/lib/entities/serviceImages.entity';
 import { SubService } from 'src/lib/entities/subService.entity';
 import { ServiceDetails } from 'src/lib/entities/serviceDetails.entity';
+import { paginate } from 'src/lib/helpers/paginationService';
+import { pagination } from 'src/lib/helpers/commonPagination';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class ServiceService {
-  constructor(private dataSource: DataSource) {}
+  constructor(
+    private dataSource: DataSource,
+    @InjectRepository(Service)
+    private readonly serviceRepository: Repository<Service>,
+  ) {}
 
   async addService(dto: ServiceDto) {
     const queryRunner = this.dataSource.createQueryRunner();
@@ -372,5 +379,169 @@ export class ServiceService {
         error.message,
       );
     }
+  }
+
+  async listOfService(serviceInfo: any) {
+    let whereCondition = {};
+
+    if (serviceInfo.searchBar) {
+      whereCondition = [{ service_name: Like(`%${serviceInfo.searchBar}%`) }];
+    }
+
+    const paginatedData = await paginate(serviceInfo, this.serviceRepository);
+
+    const sortQuery = await pagination(
+      serviceInfo.sortKey,
+      serviceInfo.sortValue,
+    );
+
+    const listOfServiceName = await this.serviceRepository.find({
+      where: whereCondition,
+      order: sortQuery,
+      take: paginatedData.pageSize,
+      skip: paginatedData.skip,
+      select: ['id', 'service_name'],
+    });
+
+    if (listOfServiceName.length <= 0) {
+      Logger.error(`Service ${Messages.NOT_FOUND}`);
+      return handleResponse(
+        HttpStatus.NOT_FOUND,
+        ResponseStatus.ERROR,
+        `Service ${Messages.NOT_FOUND}`,
+      );
+    }
+
+    Logger.log(`Service ${Messages.GET_SUCCESS}`);
+    return handleResponse(HttpStatus.OK, ResponseStatus.SUCCESS, undefined, {
+      listOfServiceName,
+      totalPages: paginatedData?.totalPages,
+      totalRecordsCount: paginatedData?.totalRecordsCount,
+      currentPage: paginatedData?.currentPage,
+      numberOfRows: listOfServiceName.length,
+      limit: paginatedData?.limit,
+    });
+  }
+
+  async getServiceList() {
+    const listOfService = await this.serviceRepository.find({
+      select: ['id', 'service_name'],
+    });
+
+    if (listOfService.length <= 0) {
+      Logger.error(`Service ${Messages.NOT_FOUND}`);
+      return handleResponse(
+        HttpStatus.NOT_FOUND,
+        ResponseStatus.ERROR,
+        `Service ${Messages.NOT_FOUND}`,
+      );
+    }
+
+    const serviceDetails = listOfService.map((item) => {
+      return {
+        id: item.id,
+        service_name: item.service_name,
+        ServiceUrl: item.service_name + '-' + item.id,
+      };
+    });
+
+    Logger.log(`Service name's ${Messages.GET_SUCCESS}`);
+    return handleResponse(
+      HttpStatus.OK,
+      ResponseStatus.SUCCESS,
+      undefined,
+      serviceDetails,
+    );
+  }
+
+  async viewService(serviceId: number) {
+    const serviceData = await this.serviceRepository.findOne({
+      where: { id: serviceId },
+      select: {
+        id: true,
+        service_name: true,
+        service_description: true,
+        serviceImage: {
+          id: true,
+          overview_image: true,
+          right_sidebar_image_1: true,
+          service_image: true,
+          right_sidebar_image_2: true,
+          service_id: true,
+        },
+        subService: {
+          id: true,
+          sub_service_title: true,
+          sub_service_description: true,
+          service_id: true,
+        },
+      },
+      relations: ['serviceImage', 'subService', 'serviceDetails'],
+    });
+
+    if (!serviceData) {
+      Logger.error(`Service ${Messages.NOT_FOUND}`);
+      return handleResponse(
+        HttpStatus.NOT_FOUND,
+        ResponseStatus.ERROR,
+        `Service ${Messages.NOT_FOUND}`,
+      );
+    }
+
+    let approachData = [];
+    let benefitsData = [];
+    let atcData = [];
+    let consultingData = [];
+    serviceData.serviceDetails.map((item) => {
+      if (item.services_details_type === ServiceType.APPROACH) {
+        approachData.push({
+          id: item.id,
+          services_details_point: item.services_details_point,
+          service_id: item.service_id,
+        });
+      }
+      if (item.services_details_type === ServiceType.BENEFITS) {
+        benefitsData.push({
+          id: item.id,
+          services_details_point: item.services_details_point,
+          service_id: item.service_id,
+        });
+      }
+      if (item.services_details_type === ServiceType.ATC) {
+        atcData.push({
+          id: item.id,
+          services_details_point: item.services_details_point,
+          service_id: item.service_id,
+        });
+      }
+      if (item.services_details_type === ServiceType.CONSULTING) {
+        consultingData.push({
+          id: item.id,
+          services_details_point: item.services_details_point,
+          services_details_description: item.services_details_description,
+          service_id: item.service_id,
+        });
+      }
+    });
+
+    const responseData = {
+      id: serviceData.id,
+      service_name: serviceData.service_name,
+      service_description: serviceData.service_description,
+      serviceImages: serviceData.serviceImage,
+      subService: serviceData.subService,
+      Approach: approachData,
+      Benefit: benefitsData,
+      ATC: atcData,
+      Consulting: consultingData,
+    };
+
+    Logger.log(`Service ${Messages.GET_SUCCESS}`);
+    return handleResponse(
+      HttpStatus.OK,
+      ResponseStatus.SUCCESS,
+      undefined,
+      responseData,
+    );
   }
 }
