@@ -19,6 +19,6 @@ export enum Messages {
   DELETE_SUCCESS = 'data deleted successfully.',
   GOOGLE_SIGN_IN = 'You are sign in with google successfully.',
   EMAIL_TEXT = 'Your details are:',
-  TWITTER_SIGN_IN = 'You are sign in with twitter successfully.',
   FACEBOOK_SIGN_IN= 'You are sign in with facebook successfully.',
+  TWITTER_SIGN_IN = 'You are sign in with twitter successfully.',
 }
