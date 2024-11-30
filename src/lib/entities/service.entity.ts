@@ -15,7 +15,7 @@ export class Service {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ length: 50, default: null })
+  @Column({ length: 50, nullable: false })
   service_name: string;
 
   @Column({ length: 255, default: null })
