@@ -10,12 +10,31 @@ import { JwtService } from '@nestjs/jwt';
 import { Otp } from './lib/entities/otp.entity';
 import { InquiryModule } from './inquiry/inquiry.module';
 import { UserModule } from './user/user.module';
+import { Product } from './lib/entities/product.entity';
+import { ProductImage } from './lib/entities/productImage.entity';
+import { ProductBenefit } from './lib/entities/productBenefit.entity';
+import { ProductExpertise } from './lib/entities/productExpertise.entity';
+import { ProductMethodology } from './lib/entities/productMethodology.entity';
+import { ProductService } from './lib/entities/productService.entity';
+import { ProductServiceDetails } from './lib/entities/productServiceDetails.entity';
+import { ProductModule } from './product/product.module';
 dotenv.config();
 
 const config: any = {
   type: 'postgres',
   autoLoadEntities: true,
-  entities: [User, Inquiry, Otp],
+  entities: [
+    User,
+    Inquiry,
+    Otp,
+    Product,
+    ProductImage,
+    ProductBenefit,
+    ProductExpertise,
+    ProductMethodology,
+    ProductService,
+    ProductServiceDetails,
+  ],
   define: {
     timestamps: false,
   },
@@ -36,6 +55,7 @@ const config: any = {
     }),
     InquiryModule,
     UserModule,
+    ProductModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtService],
