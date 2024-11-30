@@ -15,7 +15,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ProductServices } from './product.service';
-import { JwtGuard } from 'src/lib/services/auth/guard/jwt.guard';
+import { JwtGuard } from '../lib/services/auth/guard/jwt.guard';
 import {
   ApiBearerAuth,
   ApiConsumes,
@@ -23,7 +23,7 @@ import {
   ApiQuery,
 } from '@nestjs/swagger';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { storage } from 'src/lib/helpers/multer';
+import { storage } from '../lib/helpers/multer';
 import { FileUploadDto } from './dto/fileUpload.dto';
 import { ProductDto } from './dto/product.dto';
 

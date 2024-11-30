@@ -1,19 +1,19 @@
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
-import { Product } from 'src/lib/entities/product.entity';
-import { ProductBenefit } from 'src/lib/entities/productBenefit.entity';
-import { ProductExpertise } from 'src/lib/entities/productExpertise.entity';
-import { ProductImage } from 'src/lib/entities/productImage.entity';
-import { ProductMethodology } from 'src/lib/entities/productMethodology.entity';
-import { ProductService } from 'src/lib/entities/productService.entity';
-import { ProductServiceDetails } from 'src/lib/entities/productServiceDetails.entity';
+import { Product } from '../lib/entities/product.entity';
+import { ProductBenefit } from '../lib/entities/productBenefit.entity';
+import { ProductExpertise } from '../lib/entities/productExpertise.entity';
+import { ProductImage } from '../lib/entities/productImage.entity';
+import { ProductMethodology } from '../lib/entities/productMethodology.entity';
+import { ProductService } from '../lib/entities/productService.entity';
+import { ProductServiceDetails } from '../lib/entities/productServiceDetails.entity';
 import { FileUploadDto } from './dto/fileUpload.dto';
-import { Messages } from 'src/lib/utils/messages';
-import { handleResponse } from 'src/lib/helpers/handleResponse';
-import { ResponseStatus } from 'src/lib/utils/enum';
+import { Messages } from '../lib/utils/messages';
+import { handleResponse } from '../lib/helpers/handleResponse';
+import { ResponseStatus } from '../lib/utils/enum';
 import { ProductDto } from './dto/product.dto';
 import { DataSource, Like, Repository } from 'typeorm';
-import { paginate } from 'src/lib/helpers/paginationService';
-import { pagination } from 'src/lib/helpers/commonPagination';
+import { paginate } from '../lib/helpers/paginationService';
+import { pagination } from '../lib/helpers/commonPagination';
 import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()

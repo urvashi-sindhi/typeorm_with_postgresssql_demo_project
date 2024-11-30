@@ -4,7 +4,7 @@ export const inquiry = {
   createInquiry: {
     first_name: 'test',
     last_name: 'Sindhi',
-    email: 'test17@gmail.com',
+    email: 'test6@gmail.com',
     message: 'Please provide messages.',
     phone_number: '+91-9988772211',
     status: 'Pending',
