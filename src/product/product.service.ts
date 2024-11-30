@@ -92,6 +92,7 @@ export class ProductServices {
           );
         }
       }
+      
       const createProduct = await queryRunner.manager.save(Product, {
         product_name,
         description,
