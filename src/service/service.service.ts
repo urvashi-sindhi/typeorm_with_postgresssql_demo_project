@@ -476,13 +476,6 @@ export class ServiceService {
           sub_service_description: true,
           service_id: true,
         },
-        serviceDetails: {
-          id: true,
-          services_details_type: true,
-          services_details_description: true,
-          services_details_point: true,
-          service_id: true,
-        },
       },
       relations: ['serviceImage', 'subService', 'serviceDetails'],
     });
