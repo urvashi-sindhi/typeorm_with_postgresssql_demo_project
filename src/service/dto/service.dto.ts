@@ -7,7 +7,7 @@ export class ServiceDetails {
     example: 'CUSTOM-BUILT SOLUTIONS: Every business is different. ',
     type: 'string',
     format: 'string',
-    required: true,
+    required: false,
   })
   @IsString()
   @IsOptional()
@@ -19,7 +19,7 @@ export class ServiceConsultingDetails {
     example: 'INSPIRE: Visualize the future of your business',
     type: 'string',
     format: 'string',
-    required: true,
+    required: false,
   })
   @IsString()
   @IsOptional()
@@ -42,7 +42,7 @@ export class SubService {
     example: 'Mobile App Development',
     type: 'string',
     format: 'string',
-    required: true,
+    required: false,
   })
   @IsString()
   @IsOptional()
