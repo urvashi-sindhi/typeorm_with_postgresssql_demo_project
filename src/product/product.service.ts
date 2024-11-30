@@ -11,11 +11,19 @@ import { Messages } from 'src/lib/utils/messages';
 import { handleResponse } from 'src/lib/helpers/handleResponse';
 import { ResponseStatus } from 'src/lib/utils/enum';
 import { ProductDto } from './dto/product.dto';
-import { DataSource } from 'typeorm';
+import { DataSource, Like, Repository } from 'typeorm';
+import { paginate } from 'src/lib/helpers/paginationService';
+import { pagination } from 'src/lib/helpers/commonPagination';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class ProductServices {
-  constructor(private dataSource: DataSource) {}
+  constructor(
+    private dataSource: DataSource,
+    @InjectRepository(Product)
+    private readonly productRepository: Repository<Product>,
+  ) {}
+
   async fileUpload(
     req: any,
     product_image: Express.Multer.File[],
@@ -84,6 +92,7 @@ export class ProductServices {
           );
         }
       }
+      
       const createProduct = await queryRunner.manager.save(Product, {
         product_name,
         description,
@@ -366,5 +375,229 @@ export class ProductServices {
         error.message,
       );
     }
+  }
+
+  async deleteProduct(productId: number) {
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    await queryRunner.connect();
+
+    await queryRunner.startTransaction();
+
+    try {
+      const findProduct = await queryRunner.manager.findOne(Product, {
+        where: { id: productId },
+      });
+
+      if (!findProduct) {
+        Logger.error(`Product ${Messages.NOT_FOUND}`);
+        return handleResponse(
+          HttpStatus.NOT_FOUND,
+          ResponseStatus.ERROR,
+          `Product ${Messages.NOT_FOUND}`,
+        );
+      }
+
+      await queryRunner.manager.delete(ProductImage, { product_id: productId });
+
+      await queryRunner.manager.delete(ProductBenefit, {
+        product_id: productId,
+      });
+
+      await queryRunner.manager.delete(ProductExpertise, {
+        product_id: productId,
+      });
+
+      await queryRunner.manager.delete(ProductMethodology, {
+        product_id: productId,
+      });
+
+      const findProductService = await queryRunner.manager.find(
+        ProductService,
+        {
+          where: { product_id: productId },
+        },
+      );
+
+      if (findProductService.length > 0) {
+        for (const service of findProductService) {
+          await queryRunner.manager.delete(ProductServiceDetails, {
+            product_service_id: service.id,
+          });
+        }
+
+        await queryRunner.manager.delete(ProductService, {
+          product_id: productId,
+        });
+      }
+
+      await queryRunner.manager.delete(Product, {
+        id: productId,
+      });
+
+      await queryRunner.commitTransaction();
+
+      Logger.log(`Product ${Messages.DELETE_SUCCESS}`);
+      return handleResponse(
+        HttpStatus.OK,
+        ResponseStatus.SUCCESS,
+        `Product ${Messages.DELETE_SUCCESS}`,
+      );
+    } catch (error: any) {
+      await queryRunner.rollbackTransaction();
+
+      Logger.error(Messages.SERVER_ERROR);
+      return handleResponse(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        ResponseStatus.ERROR,
+        Messages.SERVER_ERROR,
+        undefined,
+        error.message,
+      );
+    }
+  }
+
+  async listOfProduct(productInfo: any) {
+    let whereCondition = {};
+
+    if (productInfo.searchBar) {
+      whereCondition = [{ product_name: Like(`%${productInfo.searchBar}%`) }];
+    }
+
+    const paginatedData = await paginate(productInfo, this.productRepository);
+
+    const sortQuery = await pagination(
+      productInfo.sortKey,
+      productInfo.sortValue,
+    );
+
+    const listOfProductName = await this.productRepository.find({
+      where: whereCondition,
+      order: sortQuery,
+      take: paginatedData.pageSize,
+      skip: paginatedData.skip,
+      select: ['id', 'product_name'],
+    });
+
+    if (listOfProductName.length <= 0) {
+      Logger.error(`Product ${Messages.NOT_FOUND}`);
+      return handleResponse(
+        HttpStatus.NOT_FOUND,
+        ResponseStatus.ERROR,
+        `Product ${Messages.NOT_FOUND}`,
+      );
+    }
+
+    Logger.log(`Product ${Messages.GET_SUCCESS}`);
+    return handleResponse(HttpStatus.OK, ResponseStatus.SUCCESS, undefined, {
+      listOfProductName,
+      totalPages: paginatedData?.totalPages,
+      totalRecordsCount: paginatedData?.totalRecordsCount,
+      currentPage: paginatedData?.currentPage,
+      numberOfRows: listOfProductName.length,
+      limit: paginatedData?.limit,
+    });
+  }
+
+  async getProductList() {
+    const listOfProduct = await this.productRepository.find({
+      select: ['id', 'product_name'],
+    });
+
+    if (listOfProduct.length <= 0) {
+      Logger.error(`Product ${Messages.NOT_FOUND}`);
+      return handleResponse(
+        HttpStatus.NOT_FOUND,
+        ResponseStatus.ERROR,
+        `Product ${Messages.NOT_FOUND}`,
+      );
+    }
+
+    const productDetails = listOfProduct.map((item) => {
+      return {
+        id: item.id,
+        product_name: item.product_name,
+        productUrl: item.product_name + '-' + item.id,
+      };
+    });
+
+    Logger.log(`Product name's ${Messages.GET_SUCCESS}`);
+    return handleResponse(
+      HttpStatus.OK,
+      ResponseStatus.SUCCESS,
+      undefined,
+      productDetails,
+    );
+  }
+
+  async viewProduct(productId: number) {
+    const productData = await this.productRepository.findOne({
+      where: { id: productId },
+      select: {
+        id: true,
+        product_name: true,
+        description: true,
+        contact_us: true,
+        productImage: {
+          id: true,
+          overview_image: true,
+          right_sidebar_image_1: true,
+          service_image: true,
+          right_sidebar_image_2: true,
+          product_id: true,
+        },
+        productBenefit: {
+          id: true,
+          product_benefit: true,
+          product_id: true,
+        },
+        productExpertise: {
+          id: true,
+          expertise_area: true,
+          expertise_description: true,
+          product_id: true,
+        },
+        productMethodology: {
+          id: true,
+          methodology_description: true,
+          product_id: true,
+        },
+        productService: {
+          id: true,
+          product_service_type: true,
+          product_id: true,
+          productServiceDetails: {
+            id: true,
+            product_service_detail: true,
+            product_service_id: true,
+          },
+        },
+      },
+      relations: [
+        'productImage',
+        'productBenefit',
+        'productExpertise',
+        'productMethodology',
+        'productService',
+        'productService.productServiceDetails',
+      ],
+    });
+
+    if (!productData) {
+      Logger.error(`Product ${Messages.NOT_FOUND}`);
+      return handleResponse(
+        HttpStatus.NOT_FOUND,
+        ResponseStatus.ERROR,
+        `Product ${Messages.NOT_FOUND}`,
+      );
+    }
+
+    Logger.log(`Product ${Messages.GET_SUCCESS}`);
+    return handleResponse(
+      HttpStatus.OK,
+      ResponseStatus.SUCCESS,
+      undefined,
+      productData,
+    );
   }
 }
