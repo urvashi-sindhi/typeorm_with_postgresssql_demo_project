@@ -7,6 +7,7 @@ import { WinstonModule } from 'nest-winston';
 import { format, transports } from 'winston';
 import { AllExceptionFilter } from './lib/helpers/exception.filter';
 import { SwaggerConfig } from './lib/utils/enum';
+import * as cookieSession from 'cookie-session';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -42,6 +43,13 @@ async function bootstrap() {
   app.setGlobalPrefix(globalPrefix);
 
   app.enableCors();
+
+  app.use(
+    cookieSession({
+      name: 'session',
+      keys: [process.env.TWITTER_CONSUMER_SECRET],
+    }),
+  );
 
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
