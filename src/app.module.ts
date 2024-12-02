@@ -61,12 +61,18 @@ const config: any = {
     TypeOrmModule.forRoot({
       ...config,
       host: process.env.DATABASE_HOST,
-      port: process.env.DB_PORT,
+      port: parseInt(process.env.DB_PORT, 10),
       password: process.env.DATABASE_PASSWORD,
       username: process.env.DATABASE_USERS,
       database: process.env.DATABASE_NAME,
       synchronize: true,
       logging: false,
+      ssl: true, // This is required for some setups
+      extra: {
+        ssl: {
+          rejectUnauthorized: false, // Set to `true` in production after providing a CA certificate
+        },
+      },
     }),
     InquiryModule,
     UserModule,
@@ -74,6 +80,13 @@ const config: any = {
     ServiceModule,
   ],
   controllers: [AppController],
-  providers: [AppService, JwtService, GoogleStrategy, TwitterStrategy, FacebookStrategy, InstagramStrategy],
+  providers: [
+    AppService,
+    JwtService,
+    GoogleStrategy,
+    TwitterStrategy,
+    FacebookStrategy,
+    InstagramStrategy,
+  ],
 })
 export class AppModule {}
