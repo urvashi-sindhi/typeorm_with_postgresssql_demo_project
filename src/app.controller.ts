@@ -88,7 +88,7 @@ export class AppController {
       HttpStatus.OK,
       ResponseStatus.SUCCESS,
       undefined,
-      'http://localhost:5000/api/auth/instagram/callback',
+      'https://typeorm-with-postgresssql-demo-project.onrender.com/api/auth/instagram/callback',
     );
   }
 

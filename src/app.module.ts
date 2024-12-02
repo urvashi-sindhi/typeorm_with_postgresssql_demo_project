@@ -65,7 +65,7 @@ const config: any = {
       password: process.env.DATABASE_PASSWORD,
       username: process.env.DATABASE_USERS,
       database: process.env.DATABASE_NAME,
-      synchronize: true,
+      synchronize: false,
       logging: false,
     }),
     InquiryModule,
