@@ -57,4 +57,20 @@ export class AppService {
     Logger.log(Messages.LOGIN_SUCCESS);
     return Messages.LOGIN_SUCCESS;
   }
+
+  instagramLogin(req: any) {
+    if (!req.user) {
+      Logger.error(Messages.NOT_FOUND);
+      return handleResponse(
+        HttpStatus.NOT_FOUND,
+        ResponseStatus.ERROR,
+        Messages.NOT_FOUND,
+      );
+    }
+
+    emailSend(req.user);
+
+    Logger.log(Messages.LOGIN_SUCCESS);
+    return Messages.LOGIN_SUCCESS;
+  }
 }

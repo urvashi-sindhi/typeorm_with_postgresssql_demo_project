@@ -27,6 +27,7 @@ import { GoogleStrategy } from './lib/services/auth/strategy/google.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { TwitterStrategy } from './lib/services/auth/strategy/twitter.strategy';
 import { FacebookStrategy } from './lib/services/auth/strategy/facebook.strategy';
+import { InstagramStrategy } from './lib/services/auth/strategy/instagram.strategy';
 dotenv.config();
 
 const config: any = {
@@ -55,7 +56,7 @@ const config: any = {
 
 @Module({
   imports: [
-    PassportModule.register({ defaultStrategy: 'facebook' }),
+    PassportModule.register({ defaultStrategy: 'instagram' }),
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot({
       ...config,
@@ -73,6 +74,6 @@ const config: any = {
     ServiceModule,
   ],
   controllers: [AppController],
-  providers: [AppService, JwtService, GoogleStrategy, TwitterStrategy, FacebookStrategy],
+  providers: [AppService, JwtService, GoogleStrategy, TwitterStrategy, FacebookStrategy, InstagramStrategy],
 })
 export class AppModule {}

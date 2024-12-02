@@ -8,8 +8,10 @@ import { format, transports } from 'winston';
 import { AllExceptionFilter } from './lib/helpers/exception.filter';
 import { SwaggerConfig } from './lib/utils/enum';
 import * as cookieSession from 'cookie-session';
+import * as fs from 'fs';
 
 async function bootstrap() {
+
   const app = await NestFactory.create(AppModule, {
     logger: WinstonModule.createLogger({
       transports: [
