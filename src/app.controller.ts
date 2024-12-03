@@ -88,14 +88,14 @@ export class AppController {
       HttpStatus.OK,
       ResponseStatus.SUCCESS,
       undefined,
-      'https://typeorm-with-postgresssql-demo-project.onrender.com/api/auth/instagram/callback',
+      'https://56d4-110-227-210-69.ngrok-free.app/api/auth/instagram/callback',
     );
   }
 
   @Get('auth/instagram/callback')
   @HttpCode(HttpStatus.OK)
   @UseGuards(InstagramOAuthGuard)
-  instagramCallback(@Req() req) {
+  instagramCallback(@Req() req: any) {
     return this.appService.instagramLogin(req);
   }
 }

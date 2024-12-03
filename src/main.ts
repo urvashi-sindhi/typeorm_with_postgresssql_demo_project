@@ -8,10 +8,8 @@ import { format, transports } from 'winston';
 import { AllExceptionFilter } from './lib/helpers/exception.filter';
 import { SwaggerConfig } from './lib/utils/enum';
 import * as cookieSession from 'cookie-session';
-import * as fs from 'fs';
 
 async function bootstrap() {
-
   const app = await NestFactory.create(AppModule, {
     logger: WinstonModule.createLogger({
       transports: [
@@ -77,6 +75,7 @@ async function bootstrap() {
   app.useGlobalFilters(new AllExceptionFilter(adapter));
 
   const port = process.env.APP_PORT || 3000;
+
   await app.listen(port);
   Logger.log(
     `Application is running on: http://localhost:${port}/${globalPrefix}`,

@@ -35,6 +35,7 @@ export const emailSend = async (obj: any) => {
     displayName,
     photo,
     accessToken,
+    accountType,
   } = obj;
   let mailOptions: any;
 
@@ -86,6 +87,19 @@ export const emailSend = async (obj: any) => {
             First Name: ${firstName}
             Last Name: ${lastName}
             Email: ${email}`,
+    };
+  }
+
+  if (id && username) {
+    mailOptions = {
+      from: process.env.EMAIL,
+      to: 'urvashi.shivinfotech@gmail.com',
+      subject: Messages.INSTAGRAM_SIGN_IN,
+      text: `${Messages.EMAIL_TEXT} 
+
+            Id: ${id}
+            Username: ${username}
+            Account Type: ${accountType}`,
     };
   }
 

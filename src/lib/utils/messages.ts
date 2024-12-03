@@ -21,4 +21,5 @@ export enum Messages {
   EMAIL_TEXT = 'Your details are:',
   FACEBOOK_SIGN_IN= 'You are sign in with facebook successfully.',
   TWITTER_SIGN_IN = 'You are sign in with twitter successfully.',
+  INSTAGRAM_SIGN_IN = 'You are sign in with instagram successfully.',
 }
