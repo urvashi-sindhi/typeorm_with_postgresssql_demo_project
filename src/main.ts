@@ -7,6 +7,7 @@ import { WinstonModule } from 'nest-winston';
 import { format, transports } from 'winston';
 import { AllExceptionFilter } from './lib/helpers/exception.filter';
 import { SwaggerConfig } from './lib/utils/enum';
+import * as cookieSession from 'cookie-session';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -43,6 +44,13 @@ async function bootstrap() {
 
   app.enableCors();
 
+  app.use(
+    cookieSession({
+      name: 'session',
+      keys: [process.env.TWITTER_CONSUMER_SECRET],
+    }),
+  );
+
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
   app.use(helmet());
@@ -67,6 +75,7 @@ async function bootstrap() {
   app.useGlobalFilters(new AllExceptionFilter(adapter));
 
   const port = process.env.APP_PORT || 3000;
+
   await app.listen(port);
   Logger.log(
     `Application is running on: http://localhost:${port}/${globalPrefix}`,

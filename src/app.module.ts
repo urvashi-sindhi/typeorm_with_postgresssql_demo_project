@@ -23,6 +23,11 @@ import { ServiceDetails } from './lib/entities/serviceDetails.entity';
 import { SubService } from './lib/entities/subService.entity';
 import { ServiceImage } from './lib/entities/serviceImages.entity';
 import { ServiceModule } from './service/service.module';
+import { GoogleStrategy } from './lib/services/auth/strategy/google.strategy';
+import { PassportModule } from '@nestjs/passport';
+import { TwitterStrategy } from './lib/services/auth/strategy/twitter.strategy';
+import { FacebookStrategy } from './lib/services/auth/strategy/facebook.strategy';
+import { InstagramStrategy } from './lib/services/auth/strategy/instagram.strategy';
 dotenv.config();
 
 const config: any = {
@@ -51,16 +56,23 @@ const config: any = {
 
 @Module({
   imports: [
+    PassportModule.register({ defaultStrategy: 'instagram' }),
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot({
       ...config,
       host: process.env.DATABASE_HOST,
-      port: process.env.DB_PORT,
+      port: parseInt(process.env.DB_PORT, 10),
       password: process.env.DATABASE_PASSWORD,
       username: process.env.DATABASE_USERS,
       database: process.env.DATABASE_NAME,
       synchronize: true,
       logging: false,
+      ssl: true, // This is required for some setups
+      extra: {
+        ssl: {
+          rejectUnauthorized: false, // Set to `true` in production after providing a CA certificate
+        },
+      },
     }),
     InquiryModule,
     UserModule,
@@ -68,6 +80,13 @@ const config: any = {
     ServiceModule,
   ],
   controllers: [AppController],
-  providers: [AppService, JwtService],
+  providers: [
+    AppService,
+    JwtService,
+    GoogleStrategy,
+    TwitterStrategy,
+    FacebookStrategy,
+    InstagramStrategy,
+  ],
 })
 export class AppModule {}

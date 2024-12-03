@@ -20,7 +20,23 @@ const transporter: any = nodemailer.createTransport({
 });
 
 export const emailSend = async (obj: any) => {
-  const { first_name, last_name, email, phone_number, message, otp } = obj;
+  const {
+    first_name,
+    last_name,
+    email,
+    phone_number,
+    message,
+    otp,
+    firstName,
+    lastName,
+    picture,
+    id,
+    username,
+    displayName,
+    photo,
+    accessToken,
+    accountType,
+  } = obj;
   let mailOptions: any;
 
   if (email && first_name) {
@@ -44,6 +60,61 @@ export const emailSend = async (obj: any) => {
       to: email,
       subject: Messages.OTP_SUBJECT,
       text: `${Messages.OTP_SUBJECT} is ${otp}`,
+    };
+  }
+
+  if (email && picture) {
+    mailOptions = {
+      from: process.env.EMAIL,
+      to: email,
+      subject: Messages.GOOGLE_SIGN_IN,
+      text: `${Messages.EMAIL_TEXT} 
+
+            First Name: ${firstName}
+            Last Name: ${lastName}
+            Email: ${email}
+            Picture: ${picture}`,
+    };
+  }
+
+  if (email && accessToken) {
+    mailOptions = {
+      from: process.env.EMAIL,
+      to: email,
+      subject: Messages.FACEBOOK_SIGN_IN,
+      text: `${Messages.EMAIL_TEXT} 
+
+            First Name: ${firstName}
+            Last Name: ${lastName}
+            Email: ${email}`,
+    };
+  }
+
+  if (id && username) {
+    mailOptions = {
+      from: process.env.EMAIL,
+      to: 'urvashi.shivinfotech@gmail.com',
+      subject: Messages.INSTAGRAM_SIGN_IN,
+      text: `${Messages.EMAIL_TEXT} 
+
+            Id: ${id}
+            Username: ${username}
+            Account Type: ${accountType}`,
+    };
+  }
+
+  if (id && username && displayName) {
+    mailOptions = {
+      from: process.env.EMAIL,
+      to: email,
+      subject: Messages.TWITTER_SIGN_IN,
+      text: `${Messages.EMAIL_TEXT} 
+
+            Id: ${id}
+            Username: ${username}
+            DisplayName: ${displayName}
+            Email: ${email}
+            photo: ${photo}`,
     };
   }
 
