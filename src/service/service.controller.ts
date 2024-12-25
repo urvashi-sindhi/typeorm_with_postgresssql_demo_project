@@ -12,10 +12,10 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ServiceService } from './service.service';
-import { JwtGuard } from 'src/lib/services/auth/guard/jwt.guard';
+import { JwtGuard } from '../lib/services/auth/guard/jwt.guard';
 import { ApiBearerAuth, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ServiceDto } from './dto/service.dto';
-import { ApiTag } from 'src/lib/utils/enum';
+import { ApiTag } from '../lib/utils/enum';
 
 @ApiTags(ApiTag.Service)
 @Controller()

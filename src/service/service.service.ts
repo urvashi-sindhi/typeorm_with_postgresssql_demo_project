@@ -1,15 +1,15 @@
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { DataSource, Like, Repository } from 'typeorm';
 import { ServiceDto } from './dto/service.dto';
-import { Service } from 'src/lib/entities/service.entity';
-import { Messages } from 'src/lib/utils/messages';
-import { handleResponse } from 'src/lib/helpers/handleResponse';
-import { ResponseStatus, ServiceType } from 'src/lib/utils/enum';
-import { ServiceImage } from 'src/lib/entities/serviceImages.entity';
-import { SubService } from 'src/lib/entities/subService.entity';
-import { ServiceDetails } from 'src/lib/entities/serviceDetails.entity';
-import { paginate } from 'src/lib/helpers/paginationService';
-import { pagination } from 'src/lib/helpers/commonPagination';
+import { Service } from '../lib/entities/service.entity';
+import { Messages } from '../lib/utils/messages';
+import { handleResponse } from '../lib/helpers/handleResponse';
+import { ResponseStatus, ServiceType } from '../lib/utils/enum';
+import { ServiceImage } from '../lib/entities/serviceImages.entity';
+import { SubService } from '../lib/entities/subService.entity';
+import { ServiceDetails } from '../lib/entities/serviceDetails.entity';
+import { paginate } from '../lib/helpers/paginationService';
+import { pagination } from '../lib/helpers/commonPagination';
 import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
@@ -39,19 +39,20 @@ export class ServiceService {
         serviceDetailsConsulting,
       } = dto;
 
-      const findService = await queryRunner.manager.findOne(Service, {
-        where: { service_name },
-      });
+      if (service_name) {
+        const findService = await queryRunner.manager.findOne(Service, {
+          where: { service_name },
+        });
 
-      if (findService) {
-        Logger.error(`Service ${Messages.ALREADY_EXIST}`);
-        return handleResponse(
-          HttpStatus.CONFLICT,
-          ResponseStatus.ERROR,
-          `Service ${Messages.ALREADY_EXIST}`,
-        );
+        if (findService) {
+          Logger.error(`Service ${Messages.ALREADY_EXIST}`);
+          return handleResponse(
+            HttpStatus.CONFLICT,
+            ResponseStatus.ERROR,
+            `Service ${Messages.ALREADY_EXIST}`,
+          );
+        }
       }
-
       const createService = await queryRunner.manager.save(Service, {
         service_name,
         service_description,
